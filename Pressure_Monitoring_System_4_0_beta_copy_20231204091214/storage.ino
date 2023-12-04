@@ -12,6 +12,22 @@ String cutoff;
 String systemStatus;
 String saveParam;
 
+String NVSBPMSID;
+String NVSarea;
+String NVSuploadDelay;
+String NVSemailDelay;
+String NVScutoff;
+String NVSsystemStatus;
+String NVSsaveParam;
+
+String newBPMSID;
+String newArea;
+String newUploadDelay;
+String newEmailDelay;
+String newCutoff;
+String newSystemStatus;
+String newSaveParam;
+
 int BPMSIDIndex=0;
 int areaIndex=0;
 int uploadDelayIndex=0;
@@ -44,25 +60,25 @@ String saveStringToFlash(String getkey,String getvalue){
 
 
 void saveToFlash(const char* key, const char* value) {
-    nvs_handle_t nvs_handle;
-    esp_err_t err;
+      nvs_handle_t nvs_handle;
+      esp_err_t err;
 
-    // Open the NVS namespace "storage" with read-write permissions
-    err = nvs_open("storage", NVS_READWRITE, &nvs_handle);
-    if (err != ESP_OK) {
-        Serial.printf("Error (%s) opening NVS handle!\n", esp_err_to_name(err));
-        return;
-    }
+      // Open the NVS namespace "storage" with read-write permissions
+      err = nvs_open("storage", NVS_READWRITE, &nvs_handle);
+      if (err != ESP_OK) {
+          Serial.printf("Error (%s) opening NVS handle!\n", esp_err_to_name(err));
+          return;
+      }
 
-    // Write the string value to the specified key
-    err = nvs_set_str(nvs_handle, key, value);
-    if (err != ESP_OK) {
-        Serial.printf("Error (%s) saving value to NVS!\n", esp_err_to_name(err));
-    }
+      // Write the string value to the specified key
+      err = nvs_set_str(nvs_handle, key, value);
+      if (err != ESP_OK) {
+          Serial.printf("Error (%s) saving value to NVS!\n", esp_err_to_name(err));
+      }
 
-    // Commit and close the NVS handle
-    nvs_commit(nvs_handle);
-    nvs_close(nvs_handle);
+      // Commit and close the NVS handle
+      nvs_commit(nvs_handle);
+      nvs_close(nvs_handle);
 }
 
 
@@ -108,6 +124,7 @@ String readFlash(const char* key) {
 
 
 String split(String strPayload){
+  Serial.println("Payload Received");
   //Serial.println("Test String: " + strPayload);
   StringSplitter *splitter = new StringSplitter(strPayload, '&', 25);  // new StringSplitter(string_to_split, delimiter, limit)
   int itemCount = splitter->getItemCount();
@@ -136,23 +153,60 @@ String split(String strPayload){
     }
 
     if(i==BPMSIDIndex){
-      BPMSID=item;
+      newBPMSID=item;
     }else if(i==areaIndex){
-      area=item;
+      newArea=item;
     }else if(i==uploadDelayIndex){
-      uploadDelay=item;
+      newUploadDelay=item;
     }else if(i==emailDelayIndex){
-      emailDelay=item;
+      newEmailDelay=item;
     }else if(i==cutoffIndex){
-      cutoff=item;
+      newCutoff=item;
     }else if(i==systemStatusIndex){
-      systemStatus=item;
+      newSystemStatus=item;
     }else if(i==saveParamIndex){
-      saveParam=item;
+      newSaveParam=item;
     }
   }
-  Serial.println(BPMSID+"\t"+area+"\t"+uploadDelay+"\t"+emailDelay+"\t"+cutoff+"\t"+systemStatus+"\t"+saveParam);
-  return(BPMSID+"\n"+area+"\n"+uploadDelay+"\n"+emailDelay+"\n"+cutoff+"\n"+systemStatus+"\n"+saveParam);
+  Serial.println("Payload Splitted");
+  return(newBPMSID+"\n"+newArea+"\n"+newUploadDelay+"\n"+newEmailDelay+"\n"+newCutoff+"\n"+newSystemStatus+"\n"+newSaveParam);
 }
 
 
+
+String SaveParamToNVS(){
+  if(newSaveParam=="Update Parameters"){
+    BPMSID=readFlash("BPMSID");
+    area=readFlash("area");
+    uploadDelay=readFlash("uploadDelay");
+    emailDelay=readFlash("emailDelay");
+    systemStatus=readFlash("cutoff");
+    saveParam=readFlash("systemStatus");
+    Serial.println("Parameters updating");
+    Serial.println("Old Values: "+BPMSID+" "+area+" "+uploadDelay+" "+emailDelay+" "+systemStatus+" "+saveParam);
+    saveStringToFlash("BPMSID",newBPMSID);
+    saveStringToFlash("area",newArea);
+    saveStringToFlash("uploadDelay",newUploadDelay);
+    saveStringToFlash("emailDelay",newEmailDelay);
+    saveStringToFlash("cutoff",newCutoff);
+    saveStringToFlash("systemStatus",newSystemStatus);
+    newSaveParam="Parameters saved";
+    saveStringToFlash("saveParam",newSaveParam);
+    Serial.println("Parameters saved to NVS");
+    updateParameters();
+    return("Parameters saved to NVS");
+  }else{
+    return("Permission not granted for saving parameters to NVS");
+  }
+}
+
+void updateParameters(){
+    BPMSID=readFlash("BPMSID");
+    area=readFlash("area");
+    uploadDelay=readFlash("uploadDelay");
+    emailDelay=readFlash("emailDelay");
+    systemStatus=readFlash("cutoff");
+    saveParam=readFlash("systemStatus");
+    Serial.println("New Values: "+BPMSID+" "+area+" "+uploadDelay+" "+emailDelay+" "+systemStatus+" "+saveParam);
+    Serial.println("Parameters updated");
+}

@@ -102,10 +102,15 @@ void defaultView(){
       display.print(cutoff);
     }else if(modeNo==6){    
       display.print(systemStatus);
-    }else if(modeNo==7){    
-      display.print(saveParam);
-    }else if(modeNo==8){ 
-      showNew(split(getData()));   
+    }else if(modeNo==7){
+      display.print("Please wait");
+      display.display();
+      //String out=split(getData());
+      //delay(5000);
+      // if((out != "error")){
+      //   display.print("Completed.");
+      //   display.display();
+      // }
     }
 }
 

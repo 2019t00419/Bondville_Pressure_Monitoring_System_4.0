@@ -1,7 +1,8 @@
 #include "sharedVar.h"
 #include <WiFi.h>
 
-int wait=-60000;
+int waitTime=300000;
+int wait=0;
 
 void setup(void) {
   setupShow();
@@ -10,6 +11,7 @@ void setup(void) {
   loadingScreen();
   setupWifi();
   setupNVS();
+  updatePara();
 }
 
 
@@ -19,11 +21,11 @@ void loop(void) {
   if(WiFi.status() != WL_CONNECTED){
     Serial.println("Not Connceted");
   }else{
-    if(millis()-wait>60000){
-      split(getData());
+    if(millis()-wait>waitTime){
+      updatePara();
       wait=millis();
     }
-    hold(); //identofy button hold
+    hold(); //identify button hold
     showMode(); //display modes
 
     

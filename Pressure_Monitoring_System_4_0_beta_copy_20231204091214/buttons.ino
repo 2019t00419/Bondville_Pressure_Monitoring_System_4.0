@@ -7,7 +7,7 @@ bool state=false;
 const byte ledPin = 25;
 const byte interruptPin = 33;
 int holdMillis=0;
-int holdingTime=1000;
+int holdingTime=5000;
 
 void setupButton(){
   pinMode(ledPin, OUTPUT);

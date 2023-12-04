@@ -28,6 +28,5 @@ void setupWifi() {
     Serial.print(".");
   }
   
-Serial.println("Ready to go");
-//testdrawstyles();
+Serial.println("\nConnected");
 }

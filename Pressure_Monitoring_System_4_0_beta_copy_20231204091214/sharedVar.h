@@ -16,5 +16,11 @@ extern String emailDelay;
 extern String cutoff;
 extern String systemStatus;
 extern String saveParam;
-
+extern String NVSarea;
+extern String NVSuploadDelay;
+extern String NVSemailDelay;
+extern String NVScutoff;
+extern String NVSsystemStatus;
+extern String NVSsaveParam;
+extern String payload;
 #endif
