@@ -1,5 +1,5 @@
 #include "sharedVar.h"
-String modes[]={"Pressure","BPMS ID","Deployed Area","Upload Delay","Email delay","Pressure Cutoff","System Status","Update Parameters"};
+String modes[]={"Pressure","BPMS ID","Deployed Area","Upload Delay","Email Delay","Pressure Cutoff","Admin Mail","System Status","Update Parameters"};
 int modeNo=0;
 
 bool btnHold=false;

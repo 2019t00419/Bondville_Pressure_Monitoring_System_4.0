@@ -11,6 +11,7 @@ void setup(void) {
   loadingScreen();
   setupWifi();
   setupNVS();
+  loadParameters();
   updatePara();
 }
 

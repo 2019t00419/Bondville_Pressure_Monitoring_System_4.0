@@ -11,6 +11,7 @@ String emailDelay;
 String cutoff;
 String systemStatus;
 String saveParam;
+String adminMail;
 
 String NVSBPMSID;
 String NVSarea;
@@ -19,6 +20,7 @@ String NVSemailDelay;
 String NVScutoff;
 String NVSsystemStatus;
 String NVSsaveParam;
+String NVSadminMail;
 
 String newBPMSID;
 String newArea;
@@ -27,6 +29,7 @@ String newEmailDelay;
 String newCutoff;
 String newSystemStatus;
 String newSaveParam;
+String newAdminMail;
 
 int BPMSIDIndex=0;
 int areaIndex=0;
@@ -35,6 +38,7 @@ int emailDelayIndex=0;
 int cutoffIndex=0;
 int systemStatusIndex=0;
 int saveParamIndex=0;
+int adminMailIndex=0;
 
 
 void setupNVS() {
@@ -66,7 +70,7 @@ void saveToFlash(const char* key, const char* value) {
       // Open the NVS namespace "storage" with read-write permissions
       err = nvs_open("storage", NVS_READWRITE, &nvs_handle);
       if (err != ESP_OK) {
-          Serial.printf("Error (%s) opening NVS handle!\n", esp_err_to_name(err));
+          Serial.printf("Error (%s) opening NVS handle for saving!\n", esp_err_to_name(err));
           return;
       }
 
@@ -94,7 +98,8 @@ String readFlash(const char* key) {
         
         err = nvs_get_str(nvs_handle, key, read_value, &length);
         if (err == ESP_OK) {
-            Serial.printf("SSID is: %s\n", read_value);
+            Serial.printf(key);
+            Serial.printf(" is: %s\n", read_value);
 
             // Convert read_value to a char*
             result = new char[length];
@@ -105,22 +110,15 @@ String readFlash(const char* key) {
             return(result);
         } else {
             Serial.printf("Error reading from NVS (%s)\n", esp_err_to_name(err));
+            saveStringToFlash(key," "); //reset key
         }
 
         nvs_close(nvs_handle);
     } else {
-        Serial.printf("Error opening NVS handle (%s)\n", esp_err_to_name(err));
+        Serial.printf("Error opening NVS handle for reading(%s)\n", esp_err_to_name(err));
     }
 }
 
-/*
- StringSplitter example: Basic
-
- This example shows how to split a delimited string to substrings (items) by using the StringSplitter library.
- The output is visible in the Serial Monitor.
-
- For more details see: https://github.com/aharshac/StringSplitter
-*/
 
 
 String split(String strPayload){
@@ -146,6 +144,8 @@ String split(String strPayload){
       emailDelayIndex=i+1;
     }else if(strItem.equals("Cutoff Value")){
       cutoffIndex=i+1;
+    }else if(strItem.equals("Admin E-mail")){
+      adminMailIndex=i+1;
     }else if(strItem.equals("System Status")){
       systemStatusIndex=i+1;
     }else if(strItem.equals("Save Parameters")){
@@ -162,6 +162,8 @@ String split(String strPayload){
       newEmailDelay=item;
     }else if(i==cutoffIndex){
       newCutoff=item;
+    }else if(i==adminMailIndex){
+      newAdminMail=item;
     }else if(i==systemStatusIndex){
       newSystemStatus=item;
     }else if(i==saveParamIndex){
@@ -169,7 +171,7 @@ String split(String strPayload){
     }
   }
   Serial.println("Payload Splitted");
-  return(newBPMSID+"\n"+newArea+"\n"+newUploadDelay+"\n"+newEmailDelay+"\n"+newCutoff+"\n"+newSystemStatus+"\n"+newSaveParam);
+  return(newBPMSID+"\n"+newArea+"\n"+newUploadDelay+"\n"+newEmailDelay+"\n"+newCutoff+"\n"+newAdminMail+"\n"+newSystemStatus+"\n"+newSaveParam);
 }
 
 
@@ -180,33 +182,40 @@ String SaveParamToNVS(){
     area=readFlash("area");
     uploadDelay=readFlash("uploadDelay");
     emailDelay=readFlash("emailDelay");
-    systemStatus=readFlash("cutoff");
-    saveParam=readFlash("systemStatus");
+    cutoff=readFlash("cutoff");
+    adminMail=readFlash("adminMail");
+    systemStatus=readFlash("systemStatus");
+    saveParam=readFlash("saveParam");
     Serial.println("Parameters updating");
-    Serial.println("Old Values: "+BPMSID+" "+area+" "+uploadDelay+" "+emailDelay+" "+systemStatus+" "+saveParam);
+    Serial.println("Old Values: "+BPMSID+" "+area+" "+uploadDelay+" "+emailDelay+" "+cutoff+" "+adminMail+" "+systemStatus+" "+saveParam);
     saveStringToFlash("BPMSID",newBPMSID);
     saveStringToFlash("area",newArea);
     saveStringToFlash("uploadDelay",newUploadDelay);
     saveStringToFlash("emailDelay",newEmailDelay);
     saveStringToFlash("cutoff",newCutoff);
+    saveStringToFlash("adminMail",newAdminMail);
     saveStringToFlash("systemStatus",newSystemStatus);
     newSaveParam="Parameters saved";
     saveStringToFlash("saveParam",newSaveParam);
     Serial.println("Parameters saved to NVS");
-    updateParameters();
+    loadParameters();
     return("Parameters saved to NVS");
   }else{
     return("Permission not granted for saving parameters to NVS");
   }
 }
 
-void updateParameters(){
+void loadParameters(){
     BPMSID=readFlash("BPMSID");
     area=readFlash("area");
     uploadDelay=readFlash("uploadDelay");
     emailDelay=readFlash("emailDelay");
-    systemStatus=readFlash("cutoff");
-    saveParam=readFlash("systemStatus");
-    Serial.println("New Values: "+BPMSID+" "+area+" "+uploadDelay+" "+emailDelay+" "+systemStatus+" "+saveParam);
+    cutoff=readFlash("cutoff");
+    adminMail=readFlash("adminMail");
+    systemStatus=readFlash("systemStatus");
+    saveParam=readFlash("saveParam");
+    Serial.println("New Values: "+BPMSID+" "+area+" "+uploadDelay+" "+emailDelay+" "+cutoff+" "+adminMail+" "+systemStatus+" "+saveParam);
     Serial.println("Parameters updated");
 }
+
+
