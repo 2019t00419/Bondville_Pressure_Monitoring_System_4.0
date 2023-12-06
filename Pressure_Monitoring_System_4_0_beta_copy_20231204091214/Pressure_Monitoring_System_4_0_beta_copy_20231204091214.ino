@@ -1,7 +1,6 @@
 #include "sharedVar.h"
 #include <WiFi.h>
 
-int waitTime=300000;
 int wait=0;
 
 void setup(void) {
@@ -22,7 +21,7 @@ void loop(void) {
   if(WiFi.status() != WL_CONNECTED){
     Serial.println("Not Connceted");
   }else{
-    if(millis()-wait>waitTime){
+    if(millis()-wait>uploadDelay.toInt()){
       updatePara();
       wait=millis();
     }

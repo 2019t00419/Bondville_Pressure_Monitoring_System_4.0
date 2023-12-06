@@ -78,6 +78,7 @@ void saveToFlash(const char* key, const char* value) {
       err = nvs_set_str(nvs_handle, key, value);
       if (err != ESP_OK) {
           Serial.printf("Error (%s) saving value to NVS!\n", esp_err_to_name(err));
+          return;
       }
 
       // Commit and close the NVS handle
@@ -111,11 +112,13 @@ String readFlash(const char* key) {
         } else {
             Serial.printf("Error reading from NVS (%s)\n", esp_err_to_name(err));
             saveStringToFlash(key," "); //reset key
+            return("Error");
         }
 
         nvs_close(nvs_handle);
     } else {
         Serial.printf("Error opening NVS handle for reading(%s)\n", esp_err_to_name(err));
+        return("Error");
     }
 }
 
@@ -183,17 +186,26 @@ String SaveParamToNVS(){
     uploadDelay=readFlash("uploadDelay");
     emailDelay=readFlash("emailDelay");
     cutoff=readFlash("cutoff");
-    adminMail=readFlash("adminMail");
+    recipient0=readFlash("recipient0");
+    recipient1=readFlash("recipient1");
+    recipient2=readFlash("recipient2");
+    recipient3=readFlash("recipient3");
+    recipient4=readFlash("recipient4");
     systemStatus=readFlash("systemStatus");
     saveParam=readFlash("saveParam");
     Serial.println("Parameters updating");
-    Serial.println("Old Values: "+BPMSID+" "+area+" "+uploadDelay+" "+emailDelay+" "+cutoff+" "+adminMail+" "+systemStatus+" "+saveParam);
+    Serial.println("Old Values: "+BPMSID+" "+area+" "+uploadDelay+" "+emailDelay+" "+cutoff+" "+recipient0+","+recipient1+","+recipient2+","+recipient3+","+recipient4+","+systemStatus+" "+saveParam);
+    Serial.println(emailSplitter(newAdminMail));
     saveStringToFlash("BPMSID",newBPMSID);
     saveStringToFlash("area",newArea);
     saveStringToFlash("uploadDelay",newUploadDelay);
     saveStringToFlash("emailDelay",newEmailDelay);
     saveStringToFlash("cutoff",newCutoff);
-    saveStringToFlash("adminMail",newAdminMail);
+    saveStringToFlash("recipient0",recipient0);
+    saveStringToFlash("recipient1",recipient1);
+    saveStringToFlash("recipient2",recipient2);
+    saveStringToFlash("recipient3",recipient3);
+    saveStringToFlash("recipient4",recipient4);
     saveStringToFlash("systemStatus",newSystemStatus);
     newSaveParam="Parameters saved";
     saveStringToFlash("saveParam",newSaveParam);
@@ -211,10 +223,14 @@ void loadParameters(){
     uploadDelay=readFlash("uploadDelay");
     emailDelay=readFlash("emailDelay");
     cutoff=readFlash("cutoff");
-    adminMail=readFlash("adminMail");
+    recipient0=readFlash("recipient0");
+    recipient1=readFlash("recipient1");
+    recipient2=readFlash("recipient2");
+    recipient3=readFlash("recipient3");
+    recipient4=readFlash("recipient4");
     systemStatus=readFlash("systemStatus");
     saveParam=readFlash("saveParam");
-    Serial.println("New Values: "+BPMSID+" "+area+" "+uploadDelay+" "+emailDelay+" "+cutoff+" "+adminMail+" "+systemStatus+" "+saveParam);
+    Serial.println("New Values: "+BPMSID+" "+area+" "+uploadDelay+" "+emailDelay+" "+cutoff+" "+recipient0+","+recipient1+","+recipient2+","+recipient3+","+recipient4+","+systemStatus+" "+saveParam);
     Serial.println("Parameters updated");
 }
 

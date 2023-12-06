@@ -100,9 +100,12 @@ void defaultView(){
       display.print(emailDelay);
     }else if(modeNo==5){    
       display.print(cutoff);
-    }else if(modeNo==6){    
-      display.print(adminMail);
-      split(adminMail);
+    }else if(modeNo==6){ 
+      display.println(recipient0);
+      display.println(recipient1);
+      display.println(recipient2);
+      display.println(recipient3);
+      display.println(recipient4);
     }else if(modeNo==7){    
       display.print(systemStatus);
     }else if(modeNo==8){
@@ -113,7 +116,7 @@ void defaultView(){
 
 
 void updateView(){
-  sendMail();
+  //sendMail();
   display.clearDisplay();
   display.drawBitmap(
     (display.width()- 40 )/2,

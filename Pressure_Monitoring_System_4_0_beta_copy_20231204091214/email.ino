@@ -21,7 +21,13 @@ const int   daylightOffset_sec = 0;
 #define AUTHOR_EMAIL "pressuremonitorlog@gmail.com"
 #define AUTHOR_PASSWORD "prue yuer ithb cqqk"
 char* RECIPIENT_EMAIL = "sandunviduranga97@gmail.com";
-String Recipients[5];
+
+String recipient0;
+String recipient1;
+String recipient2;
+String recipient3;
+String recipient4;
+
 /* Declare the global used SMTPSession object for SMTP transport */
 SMTPSession smtp;
 
@@ -135,11 +141,28 @@ String emailSplitter(String stremails){
   for(int i = 0; i < itemCount; i++){
     String item = splitter->getItemAtIndex(i);
     //Serial.println("Item @ index " + String(i) + ": " + String(item));
-    Recipients[i]=item;;
+    if(i==0){
+      recipient0=item;
+      Serial.print("Recipient0 :");
+      Serial.println(recipient0);
+    }else if(i==1){
+      recipient1=item;
+      Serial.print("Recipient1 :");
+      Serial.println(recipient1);
+    }else if(i==2){
+      recipient2=item;
+      Serial.print("Recipient2 :");
+      Serial.println(recipient2);      
+    }else if(i==3){
+      recipient3=item; 
+      Serial.print("Recipient3 :");
+      Serial.println(recipient3);     
+    }else if(i==4){
+      recipient4=item;
+      Serial.print("Recipient4 :");
+      Serial.println(recipient4);      
+    }
   }
-  for(int i=0; (i>=sizeof(modes) / sizeof(modes[0]));i++){
-    //Serial.print("Recipient"+i+":");
-    Serial.println(Recipients[i]);
-  }
+  return("Splitted emails sucessfully");
 }
 
