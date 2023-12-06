@@ -2,6 +2,7 @@
 
 ADS1115 ADS(0x48);
 float f = 0;
+double pressure;
 
 
 void setupADS()
@@ -33,7 +34,6 @@ int16_t readSensor()
 
 double calcPressure(int16_t sens){
   double sensVal=sens;
-  double pressure;
   pressure=(10.0/26400.0)*sens;
   // Serial.print("sensor: ");
   // Serial.print(val_0);

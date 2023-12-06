@@ -1,13 +1,4 @@
 
-//google sheet__________________________________________________________________________
-//Include required libraries
-#include <HTTPClient.h>
-#include "time.h"
-
-const char* ntpServer = "pool.ntp.org";
-const long  gmtOffset_sec = 19800;
-const int   daylightOffset_sec = 0;
-
 //Flash memory___________________________________________________________________________________________
 
 #include "StringSplitter.h"
@@ -35,7 +26,7 @@ SMTPSession smtp;
 void smtpCallback(SMTP_Status status);
 
 void sendMail(){
-
+  loadingBar(10,30);
   MailClient.networkReconnect(true);  
   smtp.debug(1);
   smtp.callback(smtpCallback);
@@ -63,16 +54,17 @@ void sendMail(){
   message.priority = esp_mail_smtp_priority::esp_mail_smtp_priority_low;
   message.response.notify = esp_mail_smtp_notify_success | esp_mail_smtp_notify_failure | esp_mail_smtp_notify_delay;
   /*Send HTML message*/
- String htmlMsg = "<div style=\"font-family: 'Arial', sans-serif; background-color: rgb(248, 215, 218); border: 1px solid rgb(217, 76, 83); border-radius: 5px; padding: 15px; text-align: center;\">" 
-                    "<h1 style=\"color: rgb(114, 28, 36);\">⚠ CAUTION ⚠</h1>" 
-                    "<p style=\"color: rgb(114, 28, 36); font-size: 16px; font-weight: bold;\">Pressure is critically low</p>" 
+  String htmlMsg = "<div style=\"font-family: 'Arial', sans-serif; background-color: rgb(248, 215, 218); border: 1px solid rgb(217, 76, 83); border-radius: 5px; padding: 15px; text-align: center;\">" 
+                    "<h1 style=\"color: rgb(114, 28, 36);\">⚠ <u>Pressure alert at "+area+" </u> ⚠</h1>" 
+                    "<p style=\"color: rgb(114, 28, 36); font-size: 16px; font-weight: bold;\">Pressure is critically low. The cutoff limit is "+cutoff+"Bars</p>"
+                    "Alert sent to "+recipient0+"\n"+recipient1+"\n"+recipient2+"\n"+recipient3+"\n"+recipient4+
                   "</div>";
 
   message.html.content = htmlMsg.c_str();
   message.html.content = htmlMsg.c_str();
   message.text.charSet = "us-ascii";
   message.html.transfer_encoding = Content_Transfer_Encoding::enc_7bit;
-
+  loadingBar(30,40);
 
   /* Connect to the server */
   if (!smtp.connect(&config)){
@@ -86,6 +78,7 @@ void sendMail(){
   else{
     if (smtp.isAuthenticated()){
       Serial.println("\nSuccessfuly logged in.");
+      loadingBar(40,80);
     }else{
       Serial.println("\nConnected with no Auth.");
     }
@@ -110,6 +103,7 @@ void smtpCallback(SMTP_Status status){
     ESP_MAIL_PRINTF("Message sent success: %d\n", status.completedCount());
     ESP_MAIL_PRINTF("Message sent failed: %d\n", status.failedCount());
     Serial.println("----------------\n");
+    loadingBar(80,118);
 
     for (size_t i = 0; i < smtp.sendingResult.size(); i++)
     {
@@ -126,6 +120,8 @@ void smtpCallback(SMTP_Status status){
 
     // You need to clear sending result as the memory usage will grow up.
     smtp.sendingResult.clear();
+    btnHold=false;
+    return;
   }
 }
 
@@ -166,3 +162,11 @@ String emailSplitter(String stremails){
   return("Splitted emails sucessfully");
 }
 
+
+
+void loadingBar(int start,int end){
+  for(int i=start;i<end;i++){
+    display.drawPixel(i,58,SSD1306_WHITE);
+    display.display();
+  }
+}

@@ -3,7 +3,9 @@
 
 extern bool btnHold;
 extern int num;
+extern double pressure;
 extern int modeNo;
+extern bool sentRequest;
 extern String modes[];
 extern String updateModes[];
 extern const char * ssid;
