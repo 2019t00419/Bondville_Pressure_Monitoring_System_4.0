@@ -102,6 +102,7 @@ void defaultView(){
       display.print(cutoff);
     }else if(modeNo==6){    
       display.print(adminMail);
+      split(adminMail);
     }else if(modeNo==7){    
       display.print(systemStatus);
     }else if(modeNo==8){
@@ -112,16 +113,13 @@ void defaultView(){
 
 
 void updateView(){
+  sendMail();
   display.clearDisplay();
   display.drawBitmap(
     (display.width()- 40 )/2,
     (display.height() - 60)/2,
     load_bmp, 40, 40, 1);
   display.display();
-  for(int i=0;i<128;i++){
-    display.drawPixel(i,60,SSD1306_WHITE);
-    display.display();
-  }
 }
 
 void loadingScreen(){

@@ -93,7 +93,7 @@ String readFlash(const char* key) {
 
     err = nvs_open("storage", NVS_READONLY, &nvs_handle);
     if (err == ESP_OK) {
-        char read_value[32]; // Assuming your string is less than 32 characters
+        char read_value[100]; // Assuming your string is less than 32 characters
         size_t length = sizeof(read_value);
         
         err = nvs_get_str(nvs_handle, key, read_value, &length);
@@ -217,5 +217,4 @@ void loadParameters(){
     Serial.println("New Values: "+BPMSID+" "+area+" "+uploadDelay+" "+emailDelay+" "+cutoff+" "+adminMail+" "+systemStatus+" "+saveParam);
     Serial.println("Parameters updated");
 }
-
 

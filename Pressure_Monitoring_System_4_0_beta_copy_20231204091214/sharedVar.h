@@ -27,6 +27,7 @@ extern String NVScutoff;
 extern String NVSsystemStatus;
 extern String NVSsaveParam;
 extern String NVSadminMail;
+extern String Recipients[];
 
 extern String payload;
 #endif
