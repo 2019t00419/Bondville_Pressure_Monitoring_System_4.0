@@ -139,7 +139,8 @@ void updateView(){
   display.setCursor(22,45); 
   display.print("Sending Alert!");
   display.display();
-  sendMail();
+  sendData();
+  //sendMail();
 }
 
 void loadingScreen(){

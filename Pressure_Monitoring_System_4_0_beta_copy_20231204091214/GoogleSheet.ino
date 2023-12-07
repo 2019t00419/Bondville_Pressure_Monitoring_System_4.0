@@ -1,11 +1,11 @@
-
-
-
-
 #include <WiFi.h>
 #include <HTTPClient.h>
-
 #include <Wire.h>
+#include "time.h"
+
+const char* ntpServer = "pool.ntp.org";
+const long  gmtOffset_sec = 19800;
+const int   daylightOffset_sec = 0;
 
 String GOOGLE_SCRIPT_ID_FOR_PARA = "AKfycbwoX7VVgY9fZNOI83Qx1-vcqnjhbQFtNyXQKYyA-BP7AslRkKeNWo6C_YvG_RJrNA";
 String GOOGLE_SCRIPT_ID_FOR_DATA = "AKfycbzvHEHrD6wY5TEpzZRJ8SZ97s79Oe1E7FbqrKdAh8Ww8cVSZURErhg05qIkd_JXsShj";
@@ -13,15 +13,8 @@ String data="";
 bool dataUpdated=false;
 bool sentRequest=false;
 String payload;
-#include "time.h"
-
-const char* ntpServer = "pool.ntp.org";
-const long  gmtOffset_sec = 19800;
-const int   daylightOffset_sec = 0;
-
  
 WiFiClientSecure client;
-
 
 void updatePara(){
   Serial.println("Updating parameters");
@@ -68,7 +61,7 @@ void confirmUpdate(){
       static bool flag = false;
       //https://script.google.com/macros/s/AKfycbwoX7VVgY9fZNOI83Qx1-vcqnjhbQFtNyXQKYyA-BP7AslRkKeNWo6C_YvG_RJrNA/exec?paramStatus=Parameters%20saved
       String urlFinal = "https://script.google.com/macros/s/"+GOOGLE_SCRIPT_ID_FOR_PARA+"/exec?paramStatus=Parameters%20saved" ;
-      Serial.print("POST data to spreadsheet:");
+      Serial.print("send data to spreadsheet:");
       Serial.println(urlFinal);
       HTTPClient http;
       http.begin(urlFinal.c_str());
@@ -89,7 +82,10 @@ void confirmUpdate(){
     }
 }
 
-
+void setupTime()
+{
+  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+}
 
 void sendData(){
   if (WiFi.status() == WL_CONNECTED) {
@@ -100,13 +96,13 @@ void sendData(){
         return;
       }
       char timeStringBuff[50]; //50 chars should be enough
-      strftime(timeStringBuff, sizeof(timeStringBuff), "%A, %B %d %Y %H:%M:%S", &timeinfo);
+      strftime(timeStringBuff, sizeof(timeStringBuff),"%d %B %Y %H:%M ", &timeinfo);
       String asString(timeStringBuff);
-      asString.replace(" ", "-");
+      asString.replace(" ", "%20");
       Serial.print("Time:");
       Serial.println(asString);
-      String urlFinal = "https://script.google.com/macros/s/"+GOOGLE_SCRIPT_ID_FOR_DATA+"/exec?"+"timestamp=" + asString + "&pressure=" + String(pressure);
-      Serial.print("POST data to spreadsheet:");
+      String urlFinal = "https://script.google.com/macros/s/"+GOOGLE_SCRIPT_ID_FOR_DATA+"/exec?"+"timestamp=" + asString + "&pressure=" + String(pressure) + "&cutoff=" + String(cutoff);
+      Serial.print("send data to spreadsheet:");
       Serial.println(urlFinal);
       HTTPClient http;
       http.begin(urlFinal.c_str());

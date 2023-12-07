@@ -1,7 +1,7 @@
 #include "sharedVar.h"
 #include <WiFi.h>
 
-int waitTime=60000;
+int waitTime=300000;
 int wait=0;
 
 void setup(void) {
@@ -11,6 +11,7 @@ void setup(void) {
   loadingScreen();
   setupWifi();
   setupNVS();
+  setupTime();
   loadParameters();
   updatePara();
 }
