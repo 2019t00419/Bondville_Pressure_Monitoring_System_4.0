@@ -88,43 +88,50 @@ void showMode(){
 
 
 void defaultView(){
+    // display.clearDisplay();
+    // display.setCursor(0,0);
+    // display.setTextSize(1);
+    // display.setTextColor(SSD1306_BLACK, SSD1306_WHITE);
+    // for(int i=0;i<4;i++){
+    //   if(i!=modeNo){ 
+    //     display.print(" ");   
+    //     display.print(modes[i]);
+    //   }
+    // // }
+    // display.setTextColor(SSD1306_WHITE, SSD1306_BLACK); 
+    // //display.println("\n"); 
+    // display.setTextSize(1);   
     display.clearDisplay();
+    display.setTextSize(2);
     display.setCursor(0,0);
+    display.print(calcPressure(readSensor()));
+    display.print(" Bar");
+    int xCursor=display.getCursorX();
+    display.clearDisplay();
+    display.setTextSize(2);
+    display.setCursor((128-xCursor)/2,2);
+    display.print(pressure);
+    display.println(" Bar");
     display.setTextSize(1);
-    display.setTextColor(SSD1306_BLACK, SSD1306_WHITE);
-    for(int i=0;i<4;i++){
-      if(i!=modeNo){ 
-        display.print(" ");   
-        display.print(modes[i]);
-      }
-    }
-    display.setTextColor(SSD1306_WHITE, SSD1306_BLACK); 
-    display.println("\n"); 
-    display.setTextSize(1);   
+    display.setCursor(0,30);
     display.println(modes[modeNo]);
+    display.setTextSize(1);
+    display.setCursor(0,50);
     if(modeNo==0){           
       display.print(calcPressure(readSensor()));
       display.print(" Bar");
-    }else if(modeNo==1){   
+    }else if(modeNo==4){   
       display.print(BPMSID);
-    }else if(modeNo==2){   
+    }else if(modeNo==5){   
       display.print(area);
-    }else if(modeNo==3){    
+    }else if(modeNo==2){    
       display.print(uploadDelay);
-    }else if(modeNo==4){      
+    }else if(modeNo==3){      
       display.print(emailDelay);
-    }else if(modeNo==5){    
+    }else if(modeNo==1){    
       display.print(cutoff);
-    }else if(modeNo==6){ 
-      display.println(recipient0);
-      display.println(recipient1);
-      display.println(recipient2);
-      display.println(recipient3);
-      display.println(recipient4);
-    }else if(modeNo==7){    
+    }else if(modeNo==6){    
       display.print(systemStatus);
-    }else if(modeNo==8){
-      display.print(saveParam);
     }
     display.display();
 }
@@ -180,5 +187,28 @@ void syncingScreen(){
     display.display();
   }
 }
+
+void sendingScreen(){
+  display.clearDisplay();
+  display.setTextSize(2);
+  display.setCursor(0,0);
+  display.print(pressure);
+  display.print(" Bar");
+  int xCursor=display.getCursorX();
+  display.clearDisplay();
+  display.setTextSize(2);
+  display.setCursor((128-xCursor)/2,10);
+  display.print(pressure);
+  display.println(" Bar");
+  display.setTextSize(1);
+  display.setCursor(43,45); 
+  display.print("Sending Data");
+  display.display();
+  for(int i=10;i<118;i++){
+    display.drawPixel(i,58,SSD1306_WHITE);
+    display.display();
+  }
+}
+
 
 

@@ -3,9 +3,10 @@
 
 extern bool btnHold;
 extern int num;
-extern double pressure;
+extern float pressure;
 extern int modeNo;
 extern bool sentRequest;
+extern bool mailSent;
 extern String modes[];
 extern String updateModes[];
 extern const char * ssid;
@@ -15,9 +16,9 @@ extern String GOOGLE_SCRIPT_ID;
 
 extern String BPMSID;
 extern String area;
-extern String uploadDelay;
-extern String emailDelay;
-extern String cutoff;
+extern int uploadDelay;
+extern int emailDelay;
+extern float cutoff;
 extern String systemStatus;
 extern String saveParam;
 extern String adminMail;

@@ -10,7 +10,6 @@ const int   daylightOffset_sec = 0;
 String GOOGLE_SCRIPT_ID_FOR_PARA = "AKfycbwoX7VVgY9fZNOI83Qx1-vcqnjhbQFtNyXQKYyA-BP7AslRkKeNWo6C_YvG_RJrNA";
 String GOOGLE_SCRIPT_ID_FOR_DATA = "AKfycbzvHEHrD6wY5TEpzZRJ8SZ97s79Oe1E7FbqrKdAh8Ww8cVSZURErhg05qIkd_JXsShj";
 String data=""; 
-bool dataUpdated=false;
 bool sentRequest=false;
 String payload;
  
@@ -34,20 +33,24 @@ void updatePara(){
           Serial.println("Received");
         }else{
           Serial.println("Error in receiving");
+          sentRequest=false;
+          return;
         }
         Serial.println(payload);
       }
     else {
       Serial.println("Error on HTTP request");
+      sentRequest=false;
+      return;
     }
 	  http.end();
     }
   }
   if(payload.equals("error")){
-    dataUpdated=false;
     Serial.println("Error received. Data not updated");
+    sentRequest=false;
+    return;
   }else{
-    dataUpdated=true;
     Serial.println(split(payload));
     Serial.println("New parameters received");
     Serial.println(SaveParamToNVS());
@@ -96,7 +99,7 @@ void sendData(){
         return;
       }
       char timeStringBuff[50]; //50 chars should be enough
-      strftime(timeStringBuff, sizeof(timeStringBuff),"%d %B %Y %H:%M ", &timeinfo);
+      strftime(timeStringBuff, sizeof(timeStringBuff), "%H:%M %B %d  %Y", &timeinfo);
       String asString(timeStringBuff);
       asString.replace(" ", "%20");
       Serial.print("Time:");

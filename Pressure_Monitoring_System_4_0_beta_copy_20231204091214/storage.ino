@@ -6,9 +6,9 @@ char* result;
 #include "StringSplitter.h"
 String BPMSID;
 String area;
-String uploadDelay;
-String emailDelay;
-String cutoff;
+int uploadDelay;
+int emailDelay;
+float cutoff;
 String systemStatus;
 String saveParam;
 String adminMail;
@@ -35,7 +35,7 @@ int BPMSIDIndex=0;
 int areaIndex=0;
 int uploadDelayIndex=0;
 int emailDelayIndex=0;
-int cutoffIndex=0;
+float cutoffIndex=0;
 int systemStatusIndex=0;
 int saveParamIndex=0;
 int adminMailIndex=0;
@@ -111,7 +111,7 @@ String readFlash(const char* key) {
             return(result);
         } else {
             Serial.printf("Error reading from NVS (%s)\n", esp_err_to_name(err));
-            saveStringToFlash(key," "); //reset key
+            saveStringToFlash(key,""); //reset key
             return("Error");
         }
 
@@ -183,9 +183,9 @@ String SaveParamToNVS(){
   if(newSaveParam=="Update Parameters"){
     BPMSID=readFlash("BPMSID");
     area=readFlash("area");
-    uploadDelay=readFlash("uploadDelay");
-    emailDelay=readFlash("emailDelay");
-    cutoff=readFlash("cutoff");
+    uploadDelay=readFlash("uploadDelay").toInt();
+    emailDelay=readFlash("emailDelay").toInt();
+    cutoff=readFlash("cutoff").toInt();
     recipient0=readFlash("recipient0");
     recipient1=readFlash("recipient1");
     recipient2=readFlash("recipient2");
@@ -220,9 +220,9 @@ String SaveParamToNVS(){
 void loadParameters(){
     BPMSID=readFlash("BPMSID");
     area=readFlash("area");
-    uploadDelay=readFlash("uploadDelay");
-    emailDelay=readFlash("emailDelay");
-    cutoff=readFlash("cutoff");
+    uploadDelay=readFlash("uploadDelay").toInt();
+    emailDelay=readFlash("emailDelay").toInt();
+    cutoff=readFlash("cutoff").toFloat();
     recipient0=readFlash("recipient0");
     recipient1=readFlash("recipient1");
     recipient2=readFlash("recipient2");
