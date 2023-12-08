@@ -113,7 +113,7 @@ void defaultView(){
     display.print(pressure);
     display.println(" Bar");
     display.setTextSize(1);
-    display.setCursor(0,30);
+    display.setCursor(0,25);
     display.println(modes[modeNo]);
     display.setTextSize(1);
     display.setCursor(0,50);
@@ -121,7 +121,8 @@ void defaultView(){
       display.print(calcPressure(readSensor()));
       display.print(" Bar");
     }else if(modeNo==4){   
-      display.print(BPMSID);
+      display.println(BPMSID);
+      display.print(autoMode());
     }else if(modeNo==5){   
       display.print(area);
     }else if(modeNo==2){    

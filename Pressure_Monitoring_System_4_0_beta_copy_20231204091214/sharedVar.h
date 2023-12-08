@@ -7,6 +7,7 @@ extern float pressure;
 extern int modeNo;
 extern bool sentRequest;
 extern bool mailSent;
+extern bool autoOnline;
 extern String modes[];
 extern String updateModes[];
 extern const char * ssid;

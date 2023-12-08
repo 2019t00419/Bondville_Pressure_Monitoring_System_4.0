@@ -230,6 +230,9 @@ void loadParameters(){
     recipient4=readFlash("recipient4");
     systemStatus=readFlash("systemStatus");
     saveParam=readFlash("saveParam");
+    if(systemStatus=="Auto"){
+      Serial.println(autoMode());
+    }
     Serial.println("New Values: "+BPMSID+" "+area+" "+uploadDelay+" "+emailDelay+" "+cutoff+" "+recipient0+","+recipient1+","+recipient2+","+recipient3+","+recipient4+","+systemStatus+" "+saveParam);
     Serial.println("Parameters updated");
 }
