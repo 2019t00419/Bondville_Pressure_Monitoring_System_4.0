@@ -47,9 +47,11 @@ void loop(void) {
         Serial.println("low pressure upload");
         uploadWait=millis();
       }
-      if((systemStatus=="Online") || autoOnline){
+      if((systemStatus=="Online") || (autoOnline && systemStatus=="Auto")){
         if((millis()-mailWait)>emailDelay || firstRun){
           mailSent=false;
+          sendingScreen();
+          Serial.println(autoOnline);
           sendMail();
           Serial.println("low pressure mail");
           mailWait=millis();

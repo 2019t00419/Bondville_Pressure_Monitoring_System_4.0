@@ -29,7 +29,6 @@ void smtpCallback(SMTP_Status status);
 
 void sendMail(){
   if(!mailSent){
-    loadingBar(10,30);
     MailClient.networkReconnect(true);  
     smtp.debug(1);
     smtp.callback(smtpCallback);
@@ -100,7 +99,6 @@ void sendMail(){
     message.html.content = htmlMsg.c_str();
     message.text.charSet = "us-ascii";
     message.html.transfer_encoding = Content_Transfer_Encoding::enc_7bit;
-    loadingBar(30,40);
 
     /* Connect to the server */
     if (!smtp.connect(&config)){
@@ -114,7 +112,6 @@ void sendMail(){
     else{
       if (smtp.isAuthenticated()){
         Serial.println("\nSuccessfuly logged in.");
-        loadingBar(40,80);
       }else{
         Serial.println("\nConnected with no Auth.");
       }
@@ -139,7 +136,6 @@ void smtpCallback(SMTP_Status status){
     ESP_MAIL_PRINTF("Message sent success: %d\n", status.completedCount());
     ESP_MAIL_PRINTF("Message sent failed: %d\n", status.failedCount());
     Serial.println("----------------\n");
-    loadingBar(80,118);
 
     for (size_t i = 0; i < smtp.sendingResult.size(); i++)
     {
@@ -198,10 +194,3 @@ String emailSplitter(String stremails){
 }
 
 
-
-void loadingBar(int start,int end){
-  for(int i=start;i<end;i++){
-    display.drawPixel(i,58,SSD1306_WHITE);
-    display.display();
-  }
-}

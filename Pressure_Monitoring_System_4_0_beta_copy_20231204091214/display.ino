@@ -122,7 +122,6 @@ void defaultView(){
       display.print(" Bar");
     }else if(modeNo==4){   
       display.println(BPMSID);
-      display.print(autoMode());
     }else if(modeNo==5){   
       display.print(area);
     }else if(modeNo==2){    
@@ -148,7 +147,6 @@ void updateView(){
   display.print("Sending Alert!");
   display.display();
   sendData();
-  //sendMail();
 }
 
 void loadingScreen(){
