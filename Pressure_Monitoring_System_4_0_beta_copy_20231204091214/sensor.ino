@@ -24,9 +24,7 @@ int16_t readSensor()
   if (ADS.isBusy() == false)
   {
     int16_t val_0 = ADS.getValue();
-    ADS.requestADC(0);  // request a new one
-    // Serial.print("sensor: ");
-    // Serial.print(val_0);
+    ADS.requestADC(0);
     return(val_0);
   }
 }
@@ -35,7 +33,5 @@ int16_t readSensor()
 float calcPressure(int16_t sens){
   float sensVal=sens;
   pressure=(10.0/26400.0)*sens;
-  // Serial.print("sensor: ");
-  // Serial.print(val_0);
   return (pressure);
 }

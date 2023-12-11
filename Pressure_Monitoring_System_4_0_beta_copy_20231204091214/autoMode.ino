@@ -15,7 +15,6 @@ String autoMode(){
       day.replace(" ", "%20");
       Serial.print("Day:");
       Serial.println(day);
-      
       char timeStringBuff[50]; //50 chars should be enough
       strftime(timeStringBuff, sizeof(timeStringBuff), "%H%M", &timeinfo);
       String timeStr(timeStringBuff);

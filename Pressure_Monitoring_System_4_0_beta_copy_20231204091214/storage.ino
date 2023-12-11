@@ -13,14 +13,14 @@ String systemStatus;
 String saveParam;
 String adminMail;
 
-String NVSBPMSID;
-String NVSarea;
-String NVSuploadDelay;
-String NVSemailDelay;
-String NVScutoff;
-String NVSsystemStatus;
-String NVSsaveParam;
-String NVSadminMail;
+// String NVSBPMSID;
+// String NVSarea;
+// String NVSuploadDelay;
+// String NVSemailDelay;
+// String NVScutoff;
+// String NVSsystemStatus;
+// String NVSsaveParam;
+// String NVSadminMail;
 
 String newBPMSID;
 String newArea;
