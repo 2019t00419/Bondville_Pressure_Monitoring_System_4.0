@@ -144,9 +144,8 @@ void updateView(){
     (display.height() - 60)/2,
     alert_bmp, 40, 40, 1);
   display.setCursor(22,45); 
-  display.print("Sending Alert!");
+  display.print("Update Mode!");
   display.display();
-  sendData();
 }
 
 void loadingScreen(){

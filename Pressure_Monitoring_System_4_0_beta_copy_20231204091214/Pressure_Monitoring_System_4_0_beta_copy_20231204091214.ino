@@ -1,12 +1,19 @@
 #include "sharedVar.h"
 #include <WiFi.h>
+#include <AsyncTCP.h>
+#include <ESPAsyncWebServer.h>
+
 
 int syncDelay=300000;
 int syncWait=0;
 int uploadWait=0;
 int mailWait=0;
 
+bool updateMode=false;
+
 bool firstRun=true;
+
+
 
 void setup(void) {
   setupShow();
@@ -26,9 +33,13 @@ void setup(void) {
 void loop(void) {
   if(WiFi.status() != WL_CONNECTED){
     Serial.println("Not Connceted");
+    hold(); //identify button hold
+    showMode(); //display modes  
+    createAP();
   }else{
     hold(); //identify button hold
-    showMode(); //display modes   
+    showMode(); //display modes  
+    createAP();
     if((millis()-syncWait)>syncDelay){
       sentRequest=false;
       syncingScreen();
@@ -49,6 +60,7 @@ void loop(void) {
       }
       if((systemStatus=="Online") || (autoOnline && systemStatus=="Auto")){
         if((millis()-mailWait)>emailDelay || firstRun){
+          digitalWrite(2, HIGH);
           mailSent=false;
           sendingScreen();
           Serial.println(autoOnline);
@@ -58,6 +70,15 @@ void loop(void) {
         }
       }
       firstRun=false;
+    }else{
+          digitalWrite(2, LOW);
     }
   }
 }
+
+
+
+void notFound(AsyncWebServerRequest *request) {
+  request->send(404, "text/plain", "Not found");
+}
+

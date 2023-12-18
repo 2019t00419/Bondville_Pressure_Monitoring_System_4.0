@@ -4,16 +4,17 @@ int modeNo=0;
 
 bool btnHold=false;
 bool state=false;
-const byte ledPin = 25;
+const byte btnPower = 25;
 const byte interruptPin = 33;
 int holdMillis=0;
 int holdingTime=5000;
 
 void setupButton(){
-  pinMode(ledPin, OUTPUT);
   pinMode(interruptPin, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(interruptPin), ISR, CHANGE);
-  digitalWrite(ledPin,HIGH);
+  pinMode(2, OUTPUT);
+  pinMode(btnPower, OUTPUT);
+  digitalWrite(btnPower,HIGH);
 }
 
 void ISR() {
@@ -23,6 +24,7 @@ void ISR() {
     if((millis()-holdMillis)<holdingTime){
       btnHold=false;
       modeNo++;
+      updateMode=false;
       if(modeNo>=sizeof(modes) / sizeof(modes[0])){
         modeNo=0;
       }
@@ -35,6 +37,7 @@ void hold(){
     if(millis()-holdMillis>=holdingTime){
       btnHold=true;
       modeNo--;
+      updateMode=true;
     }
   }
 }

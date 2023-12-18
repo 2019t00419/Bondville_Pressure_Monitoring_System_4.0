@@ -24,14 +24,6 @@ extern String systemStatus;
 extern String saveParam;
 extern String adminMail;
 
-// extern String NVSarea;
-// extern String NVSuploadDelay;
-// extern String NVSemailDelay;
-// extern String NVScutoff;
-// extern String NVSsystemStatus;
-// extern String NVSsaveParam;
-// extern String NVSadminMail;
-
 extern String recipient0;
 extern String recipient1;
 extern String recipient2;
