@@ -4,6 +4,7 @@
 extern bool btnHold;
 extern int num;
 extern float pressure;
+extern float sensVal;
 extern int modeNo;
 extern bool sentRequest;
 extern bool mailSent;

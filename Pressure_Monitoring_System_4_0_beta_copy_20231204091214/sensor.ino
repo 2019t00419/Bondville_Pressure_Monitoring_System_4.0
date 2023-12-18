@@ -1,8 +1,8 @@
 #include "ADS1X15.h"
 
 ADS1115 ADS(0x48);
-float f = 0;
 float pressure;
+float sensVal;
 
 
 void setupADS()
@@ -31,7 +31,7 @@ int16_t readSensor()
 
 
 float calcPressure(int16_t sens){
-  float sensVal=sens;
+  sensVal=sens;
   pressure=(10.0/26400.0)*sens;
   return (pressure);
 }

@@ -143,8 +143,14 @@ void updateView(){
     (display.width()- 40 )/2,
     (display.height() - 60)/2,
     alert_bmp, 40, 40, 1);
-  display.setCursor(22,45); 
-  display.print("Update Mode!");
+  display.setCursor(22,40); 
+  display.println("Update Mode!");
+  display.setCursor(24,48); 
+  display.println("MAC Address");
+  Serial.println(WiFi.macAddress());
+  display.print(WiFi.macAddress());
+  Serial.println(sensVal);
+  display.print(sensVal);
   display.display();
 }
 
