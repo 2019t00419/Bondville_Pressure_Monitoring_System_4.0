@@ -7,6 +7,10 @@
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
 
+int xCursorPressure;
+int xCursorID;
+int xCursorArea;
+
 // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
 // The pins for I2C are defined by the Wire-library. 
 // On an arduino UNO:       A4(SDA), A5(SCL)
@@ -47,6 +51,27 @@ static const unsigned char PROGMEM alert_bmp[] = {
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
   };
 
+static const unsigned char PROGMEM signal_bmp[] = {
+	0x1f, 0x80, 0x7d, 0xe0, 0xc0, 0x30, 0x9f, 0x90, 0x39, 0xc0, 0x20, 0x40, 0x0f, 0x00, 0x09, 0x00, 
+	0x00, 0x00, 0x06, 0x00, 0x06, 0x00, 0x00, 0x00
+  };
+
+  
+static const unsigned char PROGMEM online_bmp[] = {
+	0x06, 0x00, 0x0f, 0x00, 0x1f, 0x80, 0x1f, 0x80, 0x3f, 0xc0, 0x3f, 0xc0, 0x3f, 0xc0, 0x3f, 0xc0, 
+	0x3f, 0xc0, 0x7f, 0xe0, 0x7f, 0xe0, 0x06, 0x00
+  };
+
+static const unsigned char PROGMEM offline_bmp[] = {
+	0x04, 0x00, 0x4e, 0x00, 0x27, 0x80, 0x33, 0x80, 0x39, 0xc0, 0x3c, 0xc0, 0x3e, 0x40, 0x3f, 0x00, 
+	0x3f, 0x80, 0x7f, 0xc0, 0x06, 0x20, 0x06, 0x00
+  };
+
+
+static const unsigned char PROGMEM auto_bmp[] = {
+	0x06, 0x00, 0x06, 0x00, 0x1f, 0x80, 0x34, 0xc0, 0x2c, 0x40, 0x5c, 0x20, 0x5c, 0x20, 0x5e, 0x20, 
+	0x5f, 0xa0, 0x2f, 0x40, 0x10, 0x80, 0x0f, 0x00
+  };
 void setupShow(){
   Serial.begin(115200);
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
@@ -78,7 +103,7 @@ void showNew(String text){
 
 void showMode(){  
   if (!btnHold){
-    defaultView();
+    modeView();
   }else{
     updateView();
   }
@@ -87,55 +112,59 @@ void showMode(){
 
 
 
-void defaultView(){
-    // display.clearDisplay();
-    // display.setCursor(0,0);
-    // display.setTextSize(1);
-    // display.setTextColor(SSD1306_BLACK, SSD1306_WHITE);
-    // for(int i=0;i<4;i++){
-    //   if(i!=modeNo){ 
-    //     display.print(" ");   
-    //     display.print(modes[i]);
-    //   }
-    // // }
-    // display.setTextColor(SSD1306_WHITE, SSD1306_BLACK); 
-    // //display.println("\n"); 
-    // display.setTextSize(1);   
-    display.clearDisplay();
-    display.setTextSize(2);
-    display.setCursor(0,0);
-    display.print(calcPressure(readSensor()));
-    display.print(" Bar");
-    int xCursor=display.getCursorX();
-    display.clearDisplay();
-    display.setTextSize(2);
-    display.setCursor((128-xCursor)/2,2);
-    display.print(pressure);
-    display.println(" Bar");
-    display.setTextSize(1);
-    display.setCursor(0,25);
-    display.println(modes[modeNo]);
+void modeView(){
+  defaultView();
+  if(modeNo==0){    
+    display.setCursor((128-xCursorID)/2,35);
+    display.println(BPMSID);
+    display.setCursor((128-xCursorArea)/2,display.getCursorY()+4);
+    display.println(area);
     display.setTextSize(1);
     display.setCursor(0,50);
-    if(modeNo==0){           
-      display.print(calcPressure(readSensor()));
-      display.print(" Bar");
-    }else if(modeNo==4){   
-      display.println(BPMSID);
-    }else if(modeNo==5){   
-      display.print(area);
-    }else if(modeNo==2){    
-      display.print(uploadDelay);
-    }else if(modeNo==3){      
-      display.print(emailDelay);
-    }else if(modeNo==1){    
-      display.print(cutoff);
-    }else if(modeNo==6){    
-      display.print(systemStatus);
-    }
-    display.display();
+  }else if(modeNo==4){   
+    display.println(BPMSID);
+  }else if(modeNo==5){   
+    display.print(area);
+  }else if(modeNo==2){    
+    display.print(uploadDelay);
+  }else if(modeNo==3){      
+    display.print(emailDelay);
+  }else if(modeNo==1){    
+    display.print(cutoff);
+  }else if(modeNo==6){    
+    display.print(systemStatus);
+  }
+  display.display();
 }
 
+
+void defaultView(){
+  calcPressure(readSensor());
+  xCursorPressure=centerPressure(pressure,2);
+  xCursorID=centerText(BPMSID,1);
+  xCursorArea=centerText(area,1);
+  //centering texts
+  display.drawBitmap(112,0,signal_bmp, 12, 12, 1);
+  if(systemStatus.equals("Online")){
+    display.drawBitmap(0,0,online_bmp, 12, 12, 1);
+  }else if(systemStatus.equals("Offline")){
+    display.drawBitmap(0,0,offline_bmp, 12, 12, 1);
+  }else if(systemStatus.equals("Auto")){
+    display.drawBitmap(0,0,auto_bmp, 12, 12, 1);
+  }
+  display.setTextSize(2);
+  display.setCursor((128-xCursorPressure)/2,15);
+  display.print(pressure);
+  display.println(" Bar");
+  display.setTextSize(1);
+  for(int i=0;i<128;i++){
+    display.drawPixel(i,32,SSD1306_WHITE);
+    display.drawPixel(i,63,SSD1306_WHITE);
+  }for(int j=32;j<64;j++){
+    display.drawPixel(0,j,SSD1306_WHITE);
+    display.drawPixel(127,j,SSD1306_WHITE);
+  }
+}
 
 void updateView(){
   display.clearDisplay();
@@ -149,10 +178,14 @@ void updateView(){
   display.println("MAC Address");
   Serial.println(WiFi.macAddress());
   display.print(WiFi.macAddress());
-  Serial.println(sensVal);
-  display.print(sensVal);
+  Serial.println(readSensor());
+  display.print(readSensor());
   display.display();
 }
+
+
+
+
 
 void loadingScreen(){
   display.clearDisplay();
@@ -214,5 +247,23 @@ void sendingScreen(){
   }
 }
 
+int centerText(String text,int size){
+    display.clearDisplay();
+    display.setTextSize(size);
+    display.setCursor(0,0);
+    display.print(text);
+    int xCursor=display.getCursorX();
+    display.clearDisplay();
+    return(xCursor);
+}
 
-
+int centerPressure(float number,int size){
+    display.clearDisplay();
+    display.setTextSize(size);
+    display.setCursor(0,0);
+    display.print(number);
+    display.print(" Bar");
+    int xCursorPress=display.getCursorX();
+    display.clearDisplay();
+    return(xCursorPress);
+}
