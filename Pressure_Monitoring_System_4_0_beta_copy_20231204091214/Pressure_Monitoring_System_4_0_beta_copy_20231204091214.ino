@@ -62,7 +62,7 @@ void loop(void) {
         if((millis()-mailWait)>emailDelay || firstRun){
           digitalWrite(2, HIGH);
           mailSent=false;
-          sendingScreen();
+          sendingMailScreen();
           Serial.println(autoOnline);
           sendMail();
           Serial.println("low pressure mail");
