@@ -13,7 +13,7 @@ const char* PARAM_INPUT_8 = "cautionemail";
 
 
 // Set these to your desired credentials.
-const char *APssid = "BPMS_Updator";
+const char *APssid = "BPMS_Setup";
 const char *APpassword = "Bondville";
 bool APCreated=false;
 

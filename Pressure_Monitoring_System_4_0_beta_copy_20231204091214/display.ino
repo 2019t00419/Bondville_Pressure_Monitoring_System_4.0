@@ -10,6 +10,15 @@
 int xCursorPressure;
 int xCursorID;
 int xCursorArea;
+int xCursorData;
+int xCursorMail;
+int xCursorCutoff;
+int xCursorUpdate;
+int xCursorMAC;
+int xCursorTitle;
+int xCursorSSID;
+int xCursorPWD;
+int xCursorSens;
 
 // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
 // The pins for I2C are defined by the Wire-library. 
@@ -60,6 +69,15 @@ static const unsigned char PROGMEM sync_bmp[] = {
 	0x78, 0x1e, 0x00, 0x78, 0x1e, 0x00, 0x78, 0x1e, 0x00, 0x78, 0x1c, 0x00, 0x78, 0x18, 0x30, 0xf8, 
 	0x00, 0xf1, 0xf0, 0x01, 0xff, 0xf0, 0x07, 0xff, 0xe0, 0x0f, 0xff, 0xc0, 0x03, 0xff, 0x00, 0x01, 
 	0xf8, 0x00, 0x00, 0x70, 0x00, 0x00, 0x30, 0x00
+  };
+
+
+static const unsigned char PROGMEM update_bmp[] = {
+	0x00, 0x00, 0x00, 0x00, 0x3c, 0x00, 0x00, 0x3c, 0x00, 0x0d, 0xff, 0xb0, 0x1f, 0xff, 0xf0, 0x1f, 
+	0xcf, 0xf8, 0x0f, 0x0f, 0xf0, 0x0e, 0x3f, 0xf0, 0x1c, 0xff, 0xf8, 0x1c, 0xff, 0xf8, 0x79, 0xff, 
+	0xbe, 0x79, 0xff, 0x1e, 0x79, 0xfe, 0x0e, 0x78, 0xff, 0x3e, 0x1c, 0xff, 0x38, 0x1e, 0x7e, 0x78, 
+	0x0e, 0x18, 0x70, 0x0f, 0x81, 0xf0, 0x1f, 0xe7, 0xf8, 0x0f, 0xff, 0xf0, 0x04, 0xff, 0x20, 0x00, 
+	0x3c, 0x00, 0x00, 0x3c, 0x00, 0x00, 0x00, 0x00
   };
 
 static const unsigned char PROGMEM signal_bmp[] = {
@@ -130,20 +148,17 @@ void modeView(){
     display.println(BPMSID);
     display.setCursor((128-xCursorArea)/2,display.getCursorY()+4);
     display.println(area);
-    display.setTextSize(1);
-    display.setCursor(0,50);
-  }else if(modeNo==4){   
-    display.println(BPMSID);
-  }else if(modeNo==5){   
-    display.print(area);
-  }else if(modeNo==2){    
-    display.print(uploadDelay);
-  }else if(modeNo==3){      
-    display.print(emailDelay);
   }else if(modeNo==1){    
-    display.print(cutoff);
-  }else if(modeNo==6){    
-    display.print(systemStatus);
+    display.setCursor((128-xCursorCutoff)/2,38);
+    display.print("Cutoff: ");
+    display.println(cutoff);
+  }else if(modeNo==2){    
+    display.setCursor((128-xCursorData)/2,38);
+    display.print("Upload Delay: ");
+    display.println(uploadDelay);
+    display.setCursor((128-xCursorMail)/2,display.getCursorY()+4);
+    display.print("Alert Delay: ");
+    display.println(emailDelay);
   }
   display.display();
 }
@@ -155,6 +170,10 @@ void defaultView(){
   xCursorPressure=centerPressure(pressure,2);
   xCursorID=centerText(BPMSID,1);
   xCursorArea=centerText(area,1);
+  xCursorData=centerUpload(uploadDelay,1);
+  xCursorMail=centerMail(emailDelay,1);
+  xCursorCutoff=centerCutoff(cutoff,1);
+
   //centering texts
   display.drawBitmap(112,0,signal_bmp, 12, 12, 1);
   if(systemStatus.equals("Online")){
@@ -178,21 +197,42 @@ void defaultView(){
   }
 }
 
+
 void updateView(){
-  display.clearDisplay();
-  defaultView();
-  display.drawBitmap(
-    (display.width()- 40 )/2,
-    (display.height() - 60)/2,
-    alert_bmp, 24, 24, 1);
-  display.setCursor(22,40); 
-  display.println("Update Mode!");
-  display.setCursor(24,48); 
-  display.println("MAC Address");
-  Serial.println(WiFi.macAddress());
-  display.print(WiFi.macAddress());
-  Serial.println(readSensor());
+  xCursorTitle=centerText("SETUP MODE",2);
+  xCursorMAC=centerMAC(1);
+  xCursorSSID=alignRightSSID();
+  xCursorPWD=alignRightPWD();
+  xCursorSens=alignRightSens();
+  display.clearDisplay();  
+  for(int i=0;i<128;i++){
+    display.drawPixel(i,32,SSD1306_WHITE);
+    display.drawPixel(i,63,SSD1306_WHITE);
+  }for(int j=32;j<64;j++){
+    display.drawPixel(0,j,SSD1306_WHITE);
+    display.drawPixel(127,j,SSD1306_WHITE);
+  }
+  display.setCursor((128-xCursorTitle)/2,1);
+  display.setTextSize(2);
+  display.println("SETUP MODE");
+  display.setTextSize(1);
+  display.setCursor((128-xCursorMAC)/2,23);
+  display.print("MAC ");
+  display.println(WiFi.macAddress());
+  display.setTextSize(1);
+  display.setCursor(30,36);
+  display.print("SSID: "); 
+  display.setCursor(125-xCursorSSID,display.getCursorY());
+  display.println(APssid);
+  display.setCursor(30,display.getCursorY());
+  display.print("PWD: ");
+  display.setCursor(125-xCursorPWD,display.getCursorY());
+  display.println(APpassword);
+  display.setCursor(30,display.getCursorY());
+  display.print("Sensor: ");
+  display.setCursor(125-xCursorSens,display.getCursorY());
   display.print(readSensor());
+  display.drawBitmap(3,36,update_bmp, 24, 24, 1);
   display.display();
 }
 
@@ -271,7 +311,80 @@ int centerPressure(float number,int size){
     display.setCursor(0,0);
     display.print(number);
     display.print(" Bar");
-    int xCursorPress=display.getCursorX();
+    int xCursor=display.getCursorX();
     display.clearDisplay();
-    return(xCursorPress);
+    return(xCursor);
+}
+
+int centerCutoff(float number,int size){
+    display.clearDisplay();
+    display.setTextSize(size);
+    display.setCursor(0,0);
+    display.print("Cutoff: ");
+    display.print(number);
+    int xCursor=display.getCursorX();
+    display.clearDisplay();
+    return(xCursor);
+}
+
+int centerUpload(int number,int size){
+    display.clearDisplay();
+    display.setTextSize(size);
+    display.setCursor(0,0);
+    display.print("Upload Delay: ");
+    display.print(number);
+    int xCursor=display.getCursorX();
+    display.clearDisplay();
+    return(xCursor);
+}
+
+int centerMail(int number,int size){
+    display.clearDisplay();
+    display.setTextSize(size);
+    display.setCursor(0,0);
+    display.print("Alert Delay: ");
+    display.print(number);
+    int xCursor=display.getCursorX();
+    display.clearDisplay();
+    return(xCursor);
+}
+
+int centerMAC(int size){
+    display.clearDisplay();
+    display.setTextSize(size);
+    display.setCursor(0,0);
+    display.print("MAC ");
+    display.print(WiFi.macAddress());
+    int xCursor=display.getCursorX();
+    display.clearDisplay();
+    return(xCursor);
+}
+
+int alignRightSens(){
+    display.clearDisplay();
+    display.setTextSize(1);
+    display.setCursor(0,0);
+    display.print(readSensor());
+    int xCursor=display.getCursorX();
+    display.clearDisplay();
+    return(xCursor);
+}
+int alignRightSSID(){
+    display.clearDisplay();
+    display.setTextSize(1);
+    display.setCursor(0,0);
+    display.print(APssid);
+    int xCursor=display.getCursorX();
+    display.clearDisplay();
+    return(xCursor);
+}
+
+int alignRightPWD(){
+    display.clearDisplay();
+    display.setTextSize(1);
+    display.setCursor(0,0);
+    display.print(APpassword);
+    int xCursor=display.getCursorX();
+    display.clearDisplay();
+    return(xCursor);
 }
