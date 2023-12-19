@@ -36,7 +36,7 @@ const char index_html[] PROGMEM = R"rawliteral(
       padding: 20px;
       margin: 20px auto;
       border: 1px solid #bbb;
-      max-width: 600px;
+      max-width: 800px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
@@ -144,6 +144,7 @@ const char index_html[] PROGMEM = R"rawliteral(
   </form>
   </div>
 </body></html>)rawliteral";
+//"
 
 const char calib_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE HTML><html><head>
@@ -162,7 +163,7 @@ const char calib_html[] PROGMEM = R"rawliteral(
       padding: 20px;
       margin: 20px auto;
       border: 1px solid #bbb;
-      max-width: 600px;
+      max-width: 800px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
@@ -208,7 +209,7 @@ const char calib_html[] PROGMEM = R"rawliteral(
 
     input[type="text"], input[type="password"],input[type="number"] {
       padding: 8px;
-      width: 100%;
+      width: 80%;
       border: 1px solid #ddd;
       border-radius: 4px;
     }
@@ -240,24 +241,38 @@ const char calib_html[] PROGMEM = R"rawliteral(
       </th>
     </tr>
    </table>
-      <table style="margin: 0 auto;border-collapse: collapse;border: 1px solid #ddd;">
+    <table style="margin: 0 auto;border-collapse: collapse;border: 1px solid #ddd;">
     <form action="/get">
     <tr>
       <td>
-        Sensor value:  
+        Pressure A (Bar): 
       </td>
       
       <td>
-         <input type="number" name="calibSensor">
+         <input type="text" pattern="[0-9]+(\.[0-9]+)?" name="calibPressureA">
+      </td>
+      <td>
+        Sensor value A:  
+      </td>
+      
+      <td>
+         <input type="number" name="calibSensorA">
       </td>
     </tr>
     <tr>
       <td>
-        Pressure (Bar): 
+        Pressure B (Bar): 
       </td>
       
       <td>
-         <input type="text" pattern="[0-9]+(\.[0-9]+)?" name="calibPressure">
+         <input type="text" pattern="[0-9]+(\.[0-9]+)?" name="calibPressureB">
+      </td>
+      <td>
+        Sensor value B:  
+      </td>
+      
+      <td>
+         <input type="number" name="calibSensorB">
       </td>
     </tr>
     <tr> 
@@ -269,7 +284,7 @@ const char calib_html[] PROGMEM = R"rawliteral(
     </form>
   </div>
 </body></html>)rawliteral";
-
+//"
 
 
 const char done_html[] PROGMEM = R"rawliteral(
@@ -289,7 +304,7 @@ const char done_html[] PROGMEM = R"rawliteral(
       padding: 20px;
       margin: 20px auto;
       border: 1px solid #bbb;
-      max-width: 600px;
+      max-width: 800px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
