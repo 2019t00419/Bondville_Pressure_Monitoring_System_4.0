@@ -1,32 +1,42 @@
-/*	Project : Read Google Spread Sheet Data from ESP32	*/
-/*Refer following video for complete project : https://youtu.be/0LoeaewIAdY*/
-
-
 #include <WiFi.h>
 #include <HTTPClient.h>
 
 #include <Wire.h>
+int tryMillis=0;
 
-/********************************************************************************/
-//Things to change
+
 const char * ssid = "LiquidSulphuric";
 const char * password = "H2SO4(l)";
-/********************************************************************************/
 
 
 void setupWifi() {
-  Serial.begin(115200);
-  delay(10);
-
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
-
-  Serial.println("Started");
   Serial.print("Connecting");
   while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
+    if(reconnecting){
+      reconnectingView();
+      initialRun=false;
+    }else{
+      Serial.println("Connecting");
+    }
+    if(millis()-tryMillis>500){
+      tryMillis=millis();
+      Serial.print(".");
+    }
+    if(millis()-connectMillis>30000){
+      connectMillis=millis();
+      Serial.println("Stop trying");
+      reconnectWait=millis();
+      break;
+    }
   }
-  
-Serial.println("\nConnected");
+  if(WiFi.status() == WL_CONNECTED){
+    Serial.println("\nConnected");
+    initialRun=true;
+    loading=loading+20;
+    loadView();
+  }else{
+    Serial.println("\nNot Connected");
+  }
 }

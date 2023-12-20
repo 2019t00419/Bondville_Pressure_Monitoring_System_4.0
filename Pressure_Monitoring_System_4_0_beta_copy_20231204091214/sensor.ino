@@ -16,6 +16,8 @@ void setupADS()
   ADS.setGain(1);
   f = ADS.toVoltage();      // voltage factor
   ADS.requestADC(0);     //  first read to trigger
+  loading=loading+10;
+  loadView();
 }
 
 

@@ -15,6 +15,8 @@ void setupButton(){
   pinMode(2, OUTPUT);
   pinMode(btnPower, OUTPUT);
   digitalWrite(btnPower,HIGH);
+  loading=loading+10;
+  loadView();
 }
 
 void ISR() {

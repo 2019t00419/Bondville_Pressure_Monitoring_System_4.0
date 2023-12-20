@@ -18,7 +18,6 @@ String recipient2;
 String recipient3;
 String recipient4;
 
-
 bool mailSent;
 
 /* Declare the global used SMTPSession object for SMTP transport */

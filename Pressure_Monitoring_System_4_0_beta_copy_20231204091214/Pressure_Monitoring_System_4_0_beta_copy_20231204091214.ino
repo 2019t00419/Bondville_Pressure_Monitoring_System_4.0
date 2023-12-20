@@ -8,18 +8,25 @@ int syncDelay=300000;
 int syncWait=0;
 int uploadWait=0;
 int mailWait=0;
+int reconnectWait=0;
+int connectMillis=0;
+int loading=0;
 
 bool updateMode=false;
+bool reconnecting=false;
 
 bool firstRun=true;
+bool initialRun=true;
 
 
 
 void setup(void) {
+  Serial.begin(115200);
+  Serial.println("Started");
   setupShow();
+  loadingScreen();
   setupButton();
   setupADS();
-  loadingScreen();
   setupWifi();
   setupNVS();
   setupTime();
@@ -34,8 +41,22 @@ void loop(void) {
   if(WiFi.status() != WL_CONNECTED){
     Serial.println("Not Connceted");
     hold(); //identify button hold
-    showMode(); //display modes  
     createAP();
+    if(!btnHold){
+      Serial.print("Time: ");
+      Serial.println(millis()-reconnectWait);
+      if(millis()-reconnectWait>30000 || initialRun){
+        reconnecting=true;
+        Serial.println("Trying to connect");
+        connectMillis=millis();
+        setupWifi();
+      }else{
+        Serial.println("Waiting");
+        waitingView();
+      }
+    }else{
+      showMode(); //display modes  
+    }
   }else{
     hold(); //identify button hold
     showMode(); //display modes  

@@ -435,12 +435,10 @@ void createAP(){
       server.onNotFound(notFound);
       server.begin();
       APCreated=true;
+      initialRun=true;
     }
   }else{
-      APCreated=false;  
-      if(WiFi.status() != WL_CONNECTED){ 
-        setupWifi();
-      }
+      APCreated=false; 
   }
 
 }

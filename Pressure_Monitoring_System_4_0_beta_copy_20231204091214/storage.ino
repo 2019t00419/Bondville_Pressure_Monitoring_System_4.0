@@ -39,6 +39,8 @@ void setupNVS() {
         ret = nvs_flash_init();
     }
     ESP_ERROR_CHECK(ret);
+  loading=loading+10;
+  loadView();
 }
 
 String saveStringToFlash(String getkey,String getvalue){
@@ -224,5 +226,7 @@ void loadParameters(){
     Serial.println(autoMode());
     Serial.println("New Values: "+BPMSID+" "+area+" "+uploadDelay+" "+emailDelay+" "+cutoff+" "+recipient0+","+recipient1+","+recipient2+","+recipient3+","+recipient4+","+systemStatus+" "+saveParam);
     Serial.println("Parameters updated");
+    loading=loading+10;
+    loadView();
 }
 

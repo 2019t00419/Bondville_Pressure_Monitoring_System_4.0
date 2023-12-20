@@ -19,6 +19,12 @@ int xCursorTitle;
 int xCursorSSID;
 int xCursorPWD;
 int xCursorSens;
+int xCursorWIFI;
+int startView=10;
+int startSend=36;
+int startSync=36;
+int loadingSend=0;
+int loadingSync=0;
 
 // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
 // The pins for I2C are defined by the Wire-library. 
@@ -86,6 +92,11 @@ static const unsigned char PROGMEM signal_bmp[] = {
   };
 
   
+static const unsigned char PROGMEM signalLost_bmp[] = {
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+	0x00, 0x00, 0x06, 0x00, 0x06, 0x00, 0x00, 0x00
+};
+
 static const unsigned char PROGMEM online_bmp[] = {
 	0x06, 0x00, 0x0f, 0x00, 0x1f, 0x80, 0x1f, 0x80, 0x3f, 0xc0, 0x3f, 0xc0, 0x3f, 0xc0, 0x3f, 0xc0, 
 	0x3f, 0xc0, 0x7f, 0xe0, 0x7f, 0xe0, 0x06, 0x00
@@ -112,6 +123,7 @@ void setupShow(){
   display.setTextSize(2);   
   display.clearDisplay();
   display.setCursor(0,0);
+  loadView();
 }
 
 
@@ -151,7 +163,11 @@ void modeView(){
   }else if(modeNo==1){    
     display.setCursor((128-xCursorCutoff)/2,38);
     display.print("Cutoff: ");
-    display.println(cutoff);
+    display.print(cutoff);
+    display.println(" Bar");
+    display.setCursor((128-xCursorWIFI)/2,display.getCursorY()+4);
+    display.print("WiFi: ");
+    display.println(ssid);
   }else if(modeNo==2){    
     display.setCursor((128-xCursorData)/2,38);
     display.print("Upload Delay: ");
@@ -173,9 +189,14 @@ void defaultView(){
   xCursorData=centerUpload(uploadDelay,1);
   xCursorMail=centerMail(emailDelay,1);
   xCursorCutoff=centerCutoff(cutoff,1);
+  xCursorWIFI=centerWIFI(1);
 
-  //centering texts
-  display.drawBitmap(112,0,signal_bmp, 12, 12, 1);
+  //centering text
+  if(WiFi.status() == WL_CONNECTED){
+    display.drawBitmap(112,0,signal_bmp, 12, 12, 1);
+  }else{
+    display.drawBitmap(112,0,signalLost_bmp, 12, 12, 1);
+  }
   if(systemStatus.equals("Online")){
     display.drawBitmap(0,0,online_bmp, 12, 12, 1);
   }else if(systemStatus.equals("Offline")){
@@ -250,10 +271,8 @@ void loadingScreen(){
   display.setCursor(43,45); 
   display.print("Loading");
   display.display();
-  for(int i=10;i<118;i++){
-    display.drawPixel(i,58,SSD1306_WHITE);
-    display.display();
-  }
+  loading=loading+10;
+  loadView();
 }
 
 void syncingScreen(){
@@ -263,10 +282,6 @@ void syncingScreen(){
   display.print("Sending Data");
   display.drawBitmap(4,36,sync_bmp, 24, 24, 1);
   display.display();
-  for(int i=36;i<118;i++){
-    display.drawPixel(i,58,SSD1306_WHITE);
-    display.display();
-  }
 }
 
 void sendingScreen(){
@@ -276,10 +291,6 @@ void sendingScreen(){
   display.print("Sending Data");
   display.drawBitmap(4,36,send_bmp, 24, 24, 1);
   display.display();
-  for(int i=36;i<118;i++){
-    display.drawPixel(i,58,SSD1306_WHITE);
-    display.display();
-  }
 }
 
 void sendingMailScreen(){
@@ -322,6 +333,7 @@ int centerCutoff(float number,int size){
     display.setCursor(0,0);
     display.print("Cutoff: ");
     display.print(number);
+    display.print(" Bar");
     int xCursor=display.getCursorX();
     display.clearDisplay();
     return(xCursor);
@@ -360,6 +372,17 @@ int centerMAC(int size){
     return(xCursor);
 }
 
+int centerWIFI(int size){
+    display.clearDisplay();
+    display.setTextSize(size);
+    display.setCursor(0,0);
+    display.print("WiFi: ");
+    display.print(ssid);
+    int xCursor=display.getCursorX();
+    display.clearDisplay();
+    return(xCursor);
+}
+
 int alignRightSens(){
     display.clearDisplay();
     display.setTextSize(1);
@@ -387,4 +410,65 @@ int alignRightPWD(){
     int xCursor=display.getCursorX();
     display.clearDisplay();
     return(xCursor);
+}
+
+
+void reconnectingView(){
+  defaultView();
+  display.setTextSize(1);
+  display.setCursor(36,45); 
+  display.print("Reconnecting");
+  display.drawBitmap(4,36,alert_bmp, 24, 24, 1);
+  int progress1=36+((millis()-connectMillis)*82/30000);
+  Serial.println(progress1);
+  for(int i=36;i<progress1;i++){
+    display.drawPixel(i,58,SSD1306_WHITE);
+  }
+  display.display();
+}
+
+
+void waitingView(){
+  defaultView();
+  display.setTextSize(1);
+  display.setCursor(36,45); 
+  display.print("Waiting (");
+  display.print(30-((millis()-reconnectWait)/1000));
+  display.print("s)");
+  display.drawBitmap(4,36,alert_bmp, 24, 24, 1);
+  int progress=36+((millis()-reconnectWait)*82/30000);
+  Serial.println(progress);
+  for(int i=36;i<progress;i++){
+    display.drawPixel(i,58,SSD1306_WHITE);
+  }
+  display.display();
+}
+
+void  loadView(){
+  if (firstRun){
+    int prog=10+(loading*107/100);
+    for(int i=startView;i<prog;i++){
+      display.drawPixel(i,58,SSD1306_WHITE);
+      display.display();
+    }
+    startView=prog;
+  }
+}
+
+void  loadSend(){
+  int prog=36+(loadingSend*81/100);
+  for(int i=startSend;i<prog;i++){
+    display.drawPixel(i,58,SSD1306_WHITE);
+    display.display();
+  }
+  startSend=prog;
+}
+
+void  loadSync(){
+  int prog=36+(loadingSync*81/100);
+  for(int i=startSync;i<prog;i++){
+    display.drawPixel(i,58,SSD1306_WHITE);
+    display.display();
+  }
+  startSync=prog;
 }

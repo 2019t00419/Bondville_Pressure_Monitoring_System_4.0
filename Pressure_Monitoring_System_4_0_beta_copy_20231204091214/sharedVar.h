@@ -8,10 +8,13 @@ extern int modeNo;
 extern bool sentRequest;
 extern bool mailSent;
 extern bool autoOnline;
+extern bool reconnecting;
 extern String modes[];
 extern String updateModes[];
 extern const char * ssid;
 extern const char * password;
+extern const char * APssid;
+extern const char * APpassword;
 
 extern String GOOGLE_SCRIPT_ID;
 
@@ -31,6 +34,9 @@ extern String recipient3;
 extern String recipient4;
 
 extern String payload;
+
+extern int loadingSend;
+extern int loadingSync;
 #endif
 
 

@@ -27,6 +27,8 @@ void updatePara(){
       http.begin(url.c_str()); //Specify the URL and certificate
       http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
       int httpCode = http.GET();
+      loadingSync=loadingSync+20;
+      loadSync();
       if (httpCode > 0) { //Check for the returning code
         payload = http.getString();
         if(httpCode==200){
@@ -37,6 +39,10 @@ void updatePara(){
           return;
         }
         Serial.println(payload);
+        loading=loading+20;
+        loadView();
+        loadingSync=loadingSync+20;
+        loadSync();
       }
     else {
       Serial.println("Error on HTTP request");
@@ -52,10 +58,16 @@ void updatePara(){
     return;
   }else{
     Serial.println(split(payload));
+    loadingSync=loadingSync+20;
+    loadSync();
     Serial.println("New parameters received");
     Serial.println(SaveParamToNVS());
+    loadingSync=loadingSync+20;
+    loadSync();
     payload="";
     confirmUpdate();
+    loadingSync=loadingSync+20;
+    loadSync();
   }
 }
 
@@ -88,6 +100,8 @@ void confirmUpdate(){
 void setupTime()
 {
   configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+  loading=loading+10;
+  loadView();
 }
 
 void sendData(){
@@ -98,6 +112,8 @@ void sendData(){
         Serial.println("Failed to obtain time");
         return;
       }
+      loadingSend=loadingSend+20;
+      loadSend();
       char timeStringBuff[50]; //50 chars should be enough
       strftime(timeStringBuff, sizeof(timeStringBuff), "%H:%M %B %d  %Y", &timeinfo);
       String asString(timeStringBuff);
@@ -106,13 +122,19 @@ void sendData(){
       Serial.println(asString);
       String urlFinal = "https://script.google.com/macros/s/"+GOOGLE_SCRIPT_ID_FOR_DATA+"/exec?"+"timestamp=" + asString + "&pressure=" + String(pressure) + "&cutoff=" + String(cutoff)+"&systemStatus=" + systemStatus+"&BPMSID=" + BPMSID;
       Serial.print("send data to spreadsheet:");
+      loadingSend=loadingSend+20;
+      loadSend();
       Serial.println(urlFinal);
       HTTPClient http;
       http.begin(urlFinal.c_str());
+      loadingSend=loadingSend+20;
+      loadSend();
       http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
       int httpCode = http.GET(); 
       Serial.print("HTTP Status Code: ");
       Serial.println(httpCode);
+      loadingSend=loadingSend+20;
+      loadSend();
       //---------------------------------------------------------------------
       //getting response from google sheet
       String payload1;
@@ -120,6 +142,8 @@ void sendData(){
           payload1 = http.getString();
           Serial.println("Payload: "+payload1);    
       }
+      loadingSend=loadingSend+20;
+      loadSend();
       //---------------------------------------------------------------------
       http.end();
     }
