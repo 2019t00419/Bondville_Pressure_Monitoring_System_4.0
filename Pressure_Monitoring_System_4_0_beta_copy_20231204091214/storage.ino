@@ -22,6 +22,12 @@ String newSystemStatus;
 String newSaveParam;
 String newAdminMail;
 
+
+String pressureA;
+String pressureB;
+String sensorA;
+String sensorB;
+
 int BPMSIDIndex=0;
 int areaIndex=0;
 int uploadDelayIndex=0;
@@ -173,12 +179,13 @@ String split(String strPayload){
 
 
 String SaveParamToNVS(){
-  if(newSaveParam=="Update Parameters"){
+  if(newSaveParam=="Update Parameters" || Override){
+    Override=false;
     BPMSID=readFlash("BPMSID");
     area=readFlash("area");
     uploadDelay=readFlash("uploadDelay").toInt();
     emailDelay=readFlash("emailDelay").toInt();
-    cutoff=readFlash("cutoff").toInt();
+    cutoff=readFlash("cutoff").toFloat();
     recipient0=readFlash("recipient0");
     recipient1=readFlash("recipient1");
     recipient2=readFlash("recipient2");
@@ -186,8 +193,16 @@ String SaveParamToNVS(){
     recipient4=readFlash("recipient4");
     systemStatus=readFlash("systemStatus");
     saveParam=readFlash("saveParam");
+    //ssid=readFlash("ssid");
+    //password=readFlash("password");
+    pressureA=readFlash("pressureA").toFloat();
+    pressureB=readFlash("pressureB").toFloat();
+    sensorA=readFlash("sensorA").toInt();
+    sensorB=readFlash("sensorB").toInt();
     Serial.println("Parameters updating");
     Serial.println("Old Values: "+BPMSID+" "+area+" "+uploadDelay+" "+emailDelay+" "+cutoff+" "+recipient0+","+recipient1+","+recipient2+","+recipient3+","+recipient4+","+systemStatus+" "+saveParam);
+    //Serial.println("Old Setup Values: "+ssid+" "+password+" "+pressureA+" "+pressureB+" "+sensorA+" "+sensorB);
+    Serial.println("Old Setup Values: "+pressureA+" "+pressureB+" "+sensorA+" "+sensorB);
     Serial.println(emailSplitter(newAdminMail));
     saveStringToFlash("BPMSID",newBPMSID);
     saveStringToFlash("area",newArea);
@@ -201,7 +216,12 @@ String SaveParamToNVS(){
     saveStringToFlash("recipient4",recipient4);
     saveStringToFlash("systemStatus",newSystemStatus);
     newSaveParam="Parameters saved";
-    saveStringToFlash("saveParam",newSaveParam);
+    saveStringToFlash("ssid",newSSID);
+    saveStringToFlash("password",newPassword);
+    saveStringToFlash("pressureA",newPressureA);
+    saveStringToFlash("pressureB",newPressureB);
+    saveStringToFlash("sensorA",newSensorA);
+    saveStringToFlash("sensorB",newSensorB);
     Serial.println("Parameters saved to NVS");
     loadParameters();
     return("Parameters saved to NVS");
@@ -223,8 +243,15 @@ void loadParameters(){
     recipient4=readFlash("recipient4");
     systemStatus=readFlash("systemStatus");
     saveParam=readFlash("saveParam");
+    //ssid=readFlash("ssid");
+    //password=readFlash("password");
+    pressureA=readFlash("pressureA").toFloat();
+    pressureB=readFlash("pressureB").toFloat();
+    sensorA=readFlash("sensorA").toInt();
+    sensorB=readFlash("sensorB").toInt();
     Serial.println(autoMode());
     Serial.println("New Values: "+BPMSID+" "+area+" "+uploadDelay+" "+emailDelay+" "+cutoff+" "+recipient0+","+recipient1+","+recipient2+","+recipient3+","+recipient4+","+systemStatus+" "+saveParam);
+    //Serial.println("New Setup Values: "+ssid+" "+password+" "+pressureA+" "+pressureB+" "+sensorA+" "+sensorB);
     Serial.println("Parameters updated");
     loading=loading+10;
     loadView();

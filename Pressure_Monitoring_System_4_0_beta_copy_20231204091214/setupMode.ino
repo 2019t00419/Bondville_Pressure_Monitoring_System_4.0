@@ -2,20 +2,24 @@
 //_____________________________________________________________________________
 
 String newSSID;
+String newPassword;
+String newPressureA;
+String newPressureB;
+String newSensorA;
+String newSensorB;
 const char* PARAM_INPUT_1 = "newssid";
 const char* PARAM_INPUT_2 = "newpwd";
-const char* PARAM_INPUT_3 = "cautionlimit";
-const char* PARAM_INPUT_4 = "sendDelay";
-const char* PARAM_INPUT_5 = "mailDelay";
-const char* PARAM_INPUT_6 = "calibSensor";
-const char* PARAM_INPUT_7 = "calibPressure";
-const char* PARAM_INPUT_8 = "cautionemail";
+const char* PARAM_INPUT_3 = "pressureA";
+const char* PARAM_INPUT_4 = "pressureB";
+const char* PARAM_INPUT_5 = "sensorA";
+const char* PARAM_INPUT_6 = "sensorB";
 
 
 // Set these to your desired credentials.
 const char *APssid = "BPMS_Setup";
 const char *APpassword = "Bondville";
 bool APCreated=false;
+bool Override=false;
 
 AsyncWebServer server(80);
 
@@ -249,14 +253,14 @@ const char calib_html[] PROGMEM = R"rawliteral(
       </td>
       
       <td>
-         <input type="text" pattern="[0-9]+(\.[0-9]+)?" name="calibPressureA">
+         <input type="text" pattern="[0-9]+(\.[0-9]+)?" name="pressureA">
       </td>
       <td>
         Sensor value A:  
       </td>
       
       <td>
-         <input type="number" name="calibSensorA">
+         <input type="number" name="sensorA">
       </td>
     </tr>
     <tr>
@@ -265,14 +269,14 @@ const char calib_html[] PROGMEM = R"rawliteral(
       </td>
       
       <td>
-         <input type="text" pattern="[0-9]+(\.[0-9]+)?" name="calibPressureB">
+         <input type="text" pattern="[0-9]+(\.[0-9]+)?" name="pressureB">
       </td>
       <td>
         Sensor value B:  
       </td>
       
       <td>
-         <input type="number" name="calibSensorB">
+         <input type="number" name="sensorB">
       </td>
     </tr>
     <tr> 
@@ -424,12 +428,51 @@ void createAP(){
 
     // GET newssid value on <ESP_IP>/get?newssid=<inputMessage>
       if (request->hasParam(PARAM_INPUT_1)) {
-        newSSID = request->getParam(PARAM_INPUT_1)->value();
+        if(!(request->getParam(PARAM_INPUT_1)->value()).equals("")){   
+          newSSID = request->getParam(PARAM_INPUT_1)->value();
+        }
+        Serial.print("newSSID : ");
+        Serial.println(newSSID);
       }
-      Serial.println(newSSID);
-    
+      if (request->hasParam(PARAM_INPUT_2)) {
+        if(!(request->getParam(PARAM_INPUT_2)->value()).equals("")){ 
+          newPassword = request->getParam(PARAM_INPUT_2)->value();
+        }
+        Serial.print("newPassword : ");
+        Serial.println(newPassword);
+      }
+      if (request->hasParam(PARAM_INPUT_3)) { 
+        if(!(request->getParam(PARAM_INPUT_3)->value()).equals("")){ 
+          newPressureA = request->getParam(PARAM_INPUT_3)->value();
+        }
+        Serial.print("pressureA : ");
+        Serial.println(newPressureA);
+      }
+      if (request->hasParam(PARAM_INPUT_4)) { 
+        if(!(request->getParam(PARAM_INPUT_4)->value()).equals("")){ 
+          newPressureB = request->getParam(PARAM_INPUT_4)->value();
+        }
+        Serial.print("pressureB : ");
+        Serial.println(newPressureB);
+      }
+      if (request->hasParam(PARAM_INPUT_5)) {
+        if(!(request->getParam(PARAM_INPUT_5)->value()).equals("")){ 
+          newSensorA = request->getParam(PARAM_INPUT_5)->value();
+        }
+        Serial.print("sensorA : ");
+        Serial.println(newSensorA);
+      }
+      if (request->hasParam(PARAM_INPUT_6)) {
+        if(!(request->getParam(PARAM_INPUT_6)->value()).equals("")){ 
+          newSensorB = request->getParam(PARAM_INPUT_6)->value();
+        }
+        Serial.print("sensorB : ");
+        Serial.println(newSensorB);
+      }
+
       request->send_P(200, "text/html", done_html);
-   
+      Override=true;
+      Serial.println(SaveParamToNVS());
       });
       
       server.onNotFound(notFound);

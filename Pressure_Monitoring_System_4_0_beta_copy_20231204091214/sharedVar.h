@@ -15,6 +15,20 @@ extern const char * ssid;
 extern const char * password;
 extern const char * APssid;
 extern const char * APpassword;
+extern bool Override;
+
+extern String pressureA;
+extern String pressureB;
+extern String sensorA;
+extern String sensorB;
+
+extern String newSSID;
+extern String newPassword;
+extern String newPressureA;
+extern String newPressureB;
+extern String newSensorA;
+extern String newSensorB;
+
 
 extern String GOOGLE_SCRIPT_ID;
 

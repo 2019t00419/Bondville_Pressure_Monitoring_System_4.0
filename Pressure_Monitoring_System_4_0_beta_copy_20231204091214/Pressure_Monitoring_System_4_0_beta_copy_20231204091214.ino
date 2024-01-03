@@ -39,7 +39,7 @@ void setup(void) {
 
 void loop(void) {
   if(WiFi.status() != WL_CONNECTED){
-    Serial.println("Not Connceted");
+    //Serial.println("Not Connceted");
     hold(); //identify button hold
     createAP();
     if(!btnHold){
