@@ -17,10 +17,10 @@ extern const char * APssid;
 extern const char * APpassword;
 extern bool Override;
 
-extern String pressureA;
-extern String pressureB;
-extern String sensorA;
-extern String sensorB;
+extern float pressureA;
+extern float pressureB;
+extern int sensorA;
+extern int sensorB;
 
 extern String newSSID;
 extern String newPassword;

@@ -4,7 +4,6 @@ int modeNo=0;
 
 bool btnHold=false;
 bool state=false;
-const byte btnPower = 25;
 const byte interruptPin = 33;
 int holdMillis=0;
 int holdingTime=5000;
@@ -13,8 +12,6 @@ void setupButton(){
   pinMode(interruptPin, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(interruptPin), ISR, CHANGE);
   pinMode(2, OUTPUT);
-  pinMode(btnPower, OUTPUT);
-  digitalWrite(btnPower,HIGH);
   loading=loading+10;
   loadView();
 }

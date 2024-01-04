@@ -34,6 +34,6 @@ int16_t readSensor()
 
 float calcPressure(int16_t sens){
   float sensVal=sens;
-  pressure=(10.0/26400.0)*sens;
+  pressure=(((pressureA-pressureB)/(sensorA-sensorB))*(sens-sensorA))-pressureA;
   return (pressure);
 }

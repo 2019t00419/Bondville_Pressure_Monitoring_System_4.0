@@ -23,10 +23,10 @@ String newSaveParam;
 String newAdminMail;
 
 
-String pressureA;
-String pressureB;
-String sensorA;
-String sensorB;
+float pressureA;
+float pressureB;
+int sensorA;
+int sensorB;
 
 int BPMSIDIndex=0;
 int areaIndex=0;
@@ -201,8 +201,7 @@ String SaveParamToNVS(){
     sensorB=readFlash("sensorB").toInt();
     Serial.println("Parameters updating");
     Serial.println("Old Values: "+BPMSID+" "+area+" "+uploadDelay+" "+emailDelay+" "+cutoff+" "+recipient0+","+recipient1+","+recipient2+","+recipient3+","+recipient4+","+systemStatus+" "+saveParam);
-    //Serial.println("Old Setup Values: "+ssid+" "+password+" "+pressureA+" "+pressureB+" "+sensorA+" "+sensorB);
-    Serial.println("Old Setup Values: "+pressureA+" "+pressureB+" "+sensorA+" "+sensorB);
+    //Serial.println("Old Setup Values: "+pressureA+" "+pressureB+" "+sensorA+" "+sensorB);
     Serial.println(emailSplitter(newAdminMail));
     saveStringToFlash("BPMSID",newBPMSID);
     saveStringToFlash("area",newArea);
@@ -216,12 +215,17 @@ String SaveParamToNVS(){
     saveStringToFlash("recipient4",recipient4);
     saveStringToFlash("systemStatus",newSystemStatus);
     newSaveParam="Parameters saved";
-    saveStringToFlash("ssid",newSSID);
-    saveStringToFlash("password",newPassword);
-    saveStringToFlash("pressureA",newPressureA);
-    saveStringToFlash("pressureB",newPressureB);
-    saveStringToFlash("sensorA",newSensorA);
-    saveStringToFlash("sensorB",newSensorB);
+    if(!hold){
+      saveStringToFlash("ssid",newSSID);
+      saveStringToFlash("password",newPassword);
+      saveStringToFlash("pressureA",newPressureA);
+      saveStringToFlash("pressureB",newPressureB);
+      saveStringToFlash("sensorA",newSensorA);
+      saveStringToFlash("sensorB",newSensorB);
+      Serial.println("Setup data updated");
+    }else{
+      Serial.println("Setup data not updated");
+    }
     Serial.println("Parameters saved to NVS");
     loadParameters();
     return("Parameters saved to NVS");
@@ -251,7 +255,21 @@ void loadParameters(){
     sensorB=readFlash("sensorB").toInt();
     Serial.println(autoMode());
     Serial.println("New Values: "+BPMSID+" "+area+" "+uploadDelay+" "+emailDelay+" "+cutoff+" "+recipient0+","+recipient1+","+recipient2+","+recipient3+","+recipient4+","+systemStatus+" "+saveParam);
-    //Serial.println("New Setup Values: "+ssid+" "+password+" "+pressureA+" "+pressureB+" "+sensorA+" "+sensorB);
+    //Serial.println("New Setup Values: "+ssid+" "+password+" "+pressureA+" "+pressureB+" "+sensorA+" "+sensorB);    
+    Serial.println("New Setup data : ");
+    Serial.println("ssid : ");
+    Serial.println(ssid);
+    Serial.println("password : ");
+    Serial.println(password);
+    Serial.println("pressureA : ");
+    Serial.println(pressureA);
+    Serial.println("pressureB : ");
+    Serial.println(pressureB);
+    Serial.println("sensorA : ");
+    Serial.println(sensorA);
+    Serial.println("sensorB : ");
+    Serial.println(sensorB);
+
     Serial.println("Parameters updated");
     loading=loading+10;
     loadView();

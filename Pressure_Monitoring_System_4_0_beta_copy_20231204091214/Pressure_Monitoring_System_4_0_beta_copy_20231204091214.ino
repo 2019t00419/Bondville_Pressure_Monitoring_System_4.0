@@ -11,6 +11,7 @@ int mailWait=0;
 int reconnectWait=0;
 int connectMillis=0;
 int loading=0;
+int alarmLamp = 25;
 
 bool updateMode=false;
 bool reconnecting=false;
@@ -23,6 +24,7 @@ bool initialRun=true;
 void setup(void) {
   Serial.begin(115200);
   Serial.println("Started");
+  pinMode(alarmLamp, OUTPUT);
   setupShow();
   loadingScreen();
   setupButton();
@@ -72,16 +74,9 @@ void loop(void) {
       sendData();
       uploadWait=millis();
     }if(pressure<cutoff){
-      if((millis()-uploadWait)>uploadDelay || firstRun){
-        sentRequest=false;
-        sendingScreen();
-        sendData();
-        Serial.println("low pressure upload");
-        uploadWait=millis();
-      }
       if((systemStatus=="Online") || (autoOnline && systemStatus=="Auto")){
         if((millis()-mailWait)>emailDelay || firstRun){
-          digitalWrite(2, HIGH);
+          digitalWrite(alarmLamp,HIGH);
           mailSent=false;
           sendingMailScreen();
           Serial.println(autoOnline);
@@ -90,9 +85,16 @@ void loop(void) {
           mailWait=millis();
         }
       }
+      if((millis()-uploadWait)>uploadDelay || firstRun){
+        sentRequest=false;
+        sendingScreen();
+        sendData();
+        Serial.println("low pressure upload");
+        uploadWait=millis();
+      }
       firstRun=false;
     }else{
-          digitalWrite(2, LOW);
+        digitalWrite(alarmLamp,LOW);
     }
   }
 }
