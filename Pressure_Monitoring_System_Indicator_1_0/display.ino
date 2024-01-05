@@ -160,24 +160,25 @@ void modeView(){
   defaultView();
   if(modeNo==0){    
     display.setCursor((128-xCursorID)/2,38);
-    display.println(BPMSID);
+    display.println("Indicator1");
+    //display.println("BPMSID");
     display.setCursor((128-xCursorArea)/2,display.getCursorY()+4);
-    display.println(area);
+    display.println("Panel Room");
+    //display.println(area);
   }else if(modeNo==1){    
     display.setCursor((128-xCursorCutoff)/2,38);
-    display.print("Cutoff: ");
-    display.print(cutoff);
-    display.println(" Bar");
+    display.println("Ring 1");
+    //display.print(cutoff);
     display.setCursor((128-xCursorWIFI)/2,display.getCursorY()+4);
-    display.print("WiFi: ");
-    display.println(ssid);
+    display.print("BPMS001");
+    //display.println(ssid);
   }else if(modeNo==2){    
     display.setCursor((128-xCursorData)/2,38);
-    display.print("Upload Delay: ");
-    display.println(uploadDelay);
+    display.println("Ring 2");
+    //display.println(uploadDelay);
     display.setCursor((128-xCursorMail)/2,display.getCursorY()+4);
-    display.print("Alert Delay: ");
-    display.println(emailDelay);
+    display.print("BPMS002");
+    //display.println(emailDelay);
   }
   display.display();
 }
@@ -185,8 +186,7 @@ void modeView(){
 
 void defaultView(){
   display.clearDisplay();  
-  calcPressure(readSensor());
-  xCursorPressure=centerPressure(pressure,2);
+  xCursorPressure=centerPressure(7.0,2);
   xCursorID=centerText(BPMSID,1);
   xCursorArea=centerText(area,1);
   xCursorData=centerUpload(uploadDelay,1);
@@ -209,7 +209,7 @@ void defaultView(){
   }
   display.setTextSize(2);
   display.setCursor((128-xCursorPressure)/2,15);
-  display.print(pressure);
+  display.print(7.0);
   display.println(" Bar");
   display.setTextSize(1);
   for(int i=0;i<128;i++){
@@ -261,9 +261,6 @@ void updateView(){
   display.setCursor(125-xCursorPWD,display.getCursorY());
   display.println(APpassword);
   display.setCursor(30,display.getCursorY());
-  display.print("Sensor: ");
-  display.setCursor(125-xCursorSens,display.getCursorY());
-  display.print(readSensor());
   display.drawBitmap(3,27,update_bmp, 24, 24, 1);
   if(credUpdated){
     display.setCursor(6,55);
@@ -409,7 +406,7 @@ int alignRightSens(){
     display.clearDisplay();
     display.setTextSize(1);
     display.setCursor(0,0);
-    display.print(readSensor());
+    display.print(7.0);
     int xCursor=display.getCursorX();
     display.clearDisplay();
     return(xCursor);

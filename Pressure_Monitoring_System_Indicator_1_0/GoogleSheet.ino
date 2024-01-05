@@ -120,7 +120,7 @@ void sendData(){
       asString.replace(" ", "%20");
       Serial.print("Time:");
       Serial.println(asString);
-      String urlFinal = "https://script.google.com/macros/s/"+GOOGLE_SCRIPT_ID_FOR_DATA+"/exec?"+"timestamp=" + asString + "&pressure=" + String(pressure) + "&cutoff=" + String(cutoff)+"&systemStatus=" + systemStatus+"&BPMSID=" + BPMSID;
+      String urlFinal = "https://script.google.com/macros/s/"+GOOGLE_SCRIPT_ID_FOR_DATA+"/exec?"+"timestamp=" + asString + "&pressure=" + String(7.0) + "&cutoff=" + String(cutoff)+"&systemStatus=" + systemStatus+"&BPMSID=" + BPMSID;
       Serial.print("send data to spreadsheet:");
       loadingSend=loadingSend+20;
       loadSend();

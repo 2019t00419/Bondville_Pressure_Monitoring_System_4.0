@@ -28,7 +28,6 @@ void setup(void) {
   setupShow();
   loadingScreen();
   setupButton();
-  setupADS();
   setupNVS();
   loadCredentials();
   setupWifi();
@@ -66,30 +65,28 @@ void loop(void) {
     createAP();
     if((millis()-syncWait)>syncDelay){
       sentRequest=false;
-      syncingScreen();
-      updatePara(); 
+      //syncingScreen();
+      //updatePara(); 
       syncWait=millis();
     }if((millis()-uploadWait)>uploadDelay){
       sentRequest=false;
-      sendingScreen();
-      sendData();
+      //sendingScreen();
+      //sendData();
       uploadWait=millis();
-    }if(pressure<cutoff){
+    }if(7.0<cutoff){
       if((systemStatus=="Online") || (autoOnline && systemStatus=="Auto")){
         if((millis()-mailWait)>emailDelay || firstRun){
           digitalWrite(alarmLamp,HIGH);
-          mailSent=false;
-          sendingMailScreen();
+          //sendingMailScreen();
           Serial.println(autoOnline);
-          sendMail();
           Serial.println("low pressure mail");
           mailWait=millis();
         }
       }
       if((millis()-uploadWait)>uploadDelay || firstRun){
         sentRequest=false;
-        sendingScreen();
-        sendData();
+        //sendingScreen();
+        //sendData();
         Serial.println("low pressure upload");
         uploadWait=millis();
       }

@@ -3,7 +3,6 @@
 
 extern bool btnHold;
 extern int num;
-extern float pressure;
 extern int modeNo;
 extern bool sentRequest;
 extern bool mailSent;
@@ -39,12 +38,6 @@ extern float cutoff;
 extern String systemStatus;
 extern String saveParam;
 extern String adminMail;
-
-extern String recipient0;
-extern String recipient1;
-extern String recipient2;
-extern String recipient3;
-extern String recipient4;
 
 extern String payload;
 
