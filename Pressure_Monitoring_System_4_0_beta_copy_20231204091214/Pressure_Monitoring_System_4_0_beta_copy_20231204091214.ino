@@ -29,8 +29,9 @@ void setup(void) {
   loadingScreen();
   setupButton();
   setupADS();
-  setupWifi();
   setupNVS();
+  loadCredentials();
+  setupWifi();
   setupTime();
   loadParameters();
   updatePara();

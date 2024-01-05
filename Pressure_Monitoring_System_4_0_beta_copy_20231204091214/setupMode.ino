@@ -19,7 +19,6 @@ const char* PARAM_INPUT_6 = "sensorB";
 const char *APssid = "BPMS_Setup";
 const char *APpassword = "Bondville";
 bool APCreated=false;
-bool Override=false;
 
 AsyncWebServer server(80);
 
@@ -427,52 +426,48 @@ void createAP(){
       server.on("/get", HTTP_GET, [] (AsyncWebServerRequest *request) {
 
     // GET newssid value on <ESP_IP>/get?newssid=<inputMessage>
-      if (request->hasParam(PARAM_INPUT_1)) {
+      if ((request->hasParam(PARAM_INPUT_1)) && (request->hasParam(PARAM_INPUT_2))) {
         if(!(request->getParam(PARAM_INPUT_1)->value()).equals("")){   
           newSSID = request->getParam(PARAM_INPUT_1)->value();
         }
-        Serial.print("newSSID : ");
-        Serial.println(newSSID);
-      }
-      if (request->hasParam(PARAM_INPUT_2)) {
         if(!(request->getParam(PARAM_INPUT_2)->value()).equals("")){ 
           newPassword = request->getParam(PARAM_INPUT_2)->value();
         }
+        Serial.print("newSSID : ");
+        Serial.println(newSSID);
         Serial.print("newPassword : ");
         Serial.println(newPassword);
+        credUpdated=true;
+        calibrated=false;
+        saveCredentials();
       }
-      if (request->hasParam(PARAM_INPUT_3)) { 
-        if(!(request->getParam(PARAM_INPUT_3)->value()).equals("")){ 
+
+      if ((request->hasParam(PARAM_INPUT_3)) && (request->hasParam(PARAM_INPUT_4)) && (request->hasParam(PARAM_INPUT_5)) && (request->hasParam(PARAM_INPUT_6))) {
+        if(!(request->getParam(PARAM_INPUT_3)->value()).equals("")){   
           newPressureA = request->getParam(PARAM_INPUT_3)->value();
         }
-        Serial.print("pressureA : ");
-        Serial.println(newPressureA);
-      }
-      if (request->hasParam(PARAM_INPUT_4)) { 
-        if(!(request->getParam(PARAM_INPUT_4)->value()).equals("")){ 
+        if(!(request->getParam(PARAM_INPUT_4)->value()).equals("")){  
           newPressureB = request->getParam(PARAM_INPUT_4)->value();
         }
-        Serial.print("pressureB : ");
-        Serial.println(newPressureB);
-      }
-      if (request->hasParam(PARAM_INPUT_5)) {
-        if(!(request->getParam(PARAM_INPUT_5)->value()).equals("")){ 
+        if(!(request->getParam(PARAM_INPUT_5)->value()).equals("")){   
           newSensorA = request->getParam(PARAM_INPUT_5)->value();
         }
-        Serial.print("sensorA : ");
-        Serial.println(newSensorA);
-      }
-      if (request->hasParam(PARAM_INPUT_6)) {
         if(!(request->getParam(PARAM_INPUT_6)->value()).equals("")){ 
           newSensorB = request->getParam(PARAM_INPUT_6)->value();
         }
+        Serial.print("pressureA : ");
+        Serial.println(newPressureA);
+        Serial.print("pressureB : ");
+        Serial.println(newPressureB);
+        Serial.print("sensorA : ");
+        Serial.println(newSensorA);
         Serial.print("sensorB : ");
         Serial.println(newSensorB);
+        credUpdated=false;
+        calibrated=true;
+        saveCalibration();
       }
-
       request->send_P(200, "text/html", done_html);
-      Override=true;
-      Serial.println(SaveParamToNVS());
       });
       
       server.onNotFound(notFound);

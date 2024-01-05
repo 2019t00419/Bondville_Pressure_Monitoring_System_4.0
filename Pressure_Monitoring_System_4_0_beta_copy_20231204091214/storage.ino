@@ -38,6 +38,10 @@ int saveParamIndex=0;
 int adminMailIndex=0;
 
 
+char read_ssid[32];
+size_t length = sizeof(read_ssid);
+
+
 void setupNVS() {
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
@@ -121,7 +125,75 @@ String readFlash(const char* key) {
     }
 }
 
+String readSSID() {
+    // Read the string back from flash (optional, just for verification)
+    nvs_handle_t nvs_handle;
+    esp_err_t err;
 
+    err = nvs_open("storage", NVS_READONLY, &nvs_handle);
+    if (err == ESP_OK) {
+        char read_value[100]; // Assuming your string is less than 32 characters
+        size_t length = sizeof(read_value);
+        
+        err = nvs_get_str(nvs_handle, "ssid", read_value, &length);
+        if (err == ESP_OK) {
+            Serial.printf("ssid");
+            Serial.printf(" is: %s\n", read_value);
+
+            // Convert read_value to a char*
+            ssid = new char[length];
+            strcpy(ssid, read_value);
+
+            // Print and verify the updated SSID
+            //Serial.printf("Updated SSID is: %s\n", ssid);
+            return("SSID successfully synced");
+        } else {
+            Serial.printf("Error reading from NVS (%s)\n", esp_err_to_name(err));
+            saveStringToFlash("ssid",""); //reset key
+            return("Error");
+        }
+
+        nvs_close(nvs_handle);
+    } else {
+        Serial.printf("Error opening NVS handle for reading(%s)\n", esp_err_to_name(err));
+        return("Error");
+    }
+}
+
+String readPassword() {
+    // Read the string back from flash (optional, just for verification)
+    nvs_handle_t nvs_handle;
+    esp_err_t err;
+
+    err = nvs_open("storage", NVS_READONLY, &nvs_handle);
+    if (err == ESP_OK) {
+        char read_value[100]; // Assuming your string is less than 32 characters
+        size_t length = sizeof(read_value);
+        
+        err = nvs_get_str(nvs_handle, "password", read_value, &length);
+        if (err == ESP_OK) {
+            Serial.printf("password");
+            Serial.printf(" is: %s\n", read_value);
+
+            // Convert read_value to a char*
+            password = new char[length];
+            strcpy(password, read_value);
+
+            // Print and verify the updated SSID
+            //Serial.printf("Updated password is: %s\n", password);
+            return("password successfully synced");
+        } else {
+            Serial.printf("Error reading from NVS (%s)\n", esp_err_to_name(err));
+            saveStringToFlash("password",""); //reset key
+            return("Error");
+        }
+
+        nvs_close(nvs_handle);
+    } else {
+        Serial.printf("Error opening NVS handle for reading(%s)\n", esp_err_to_name(err));
+        return("Error");
+    }
+}
 
 String split(String strPayload){
   Serial.println("Payload Received");
@@ -179,8 +251,7 @@ String split(String strPayload){
 
 
 String SaveParamToNVS(){
-  if(newSaveParam=="Update Parameters" || Override){
-    Override=false;
+  if(newSaveParam=="Update Parameters"){
     BPMSID=readFlash("BPMSID");
     area=readFlash("area");
     uploadDelay=readFlash("uploadDelay").toInt();
@@ -193,16 +264,11 @@ String SaveParamToNVS(){
     recipient4=readFlash("recipient4");
     systemStatus=readFlash("systemStatus");
     saveParam=readFlash("saveParam");
-    //ssid=readFlash("ssid");
-    //password=readFlash("password");
-    pressureA=readFlash("pressureA").toFloat();
-    pressureB=readFlash("pressureB").toFloat();
-    sensorA=readFlash("sensorA").toInt();
-    sensorB=readFlash("sensorB").toInt();
     Serial.println("Parameters updating");
     Serial.println("Old Values: "+BPMSID+" "+area+" "+uploadDelay+" "+emailDelay+" "+cutoff+" "+recipient0+","+recipient1+","+recipient2+","+recipient3+","+recipient4+","+systemStatus+" "+saveParam);
     //Serial.println("Old Setup Values: "+pressureA+" "+pressureB+" "+sensorA+" "+sensorB);
     Serial.println(emailSplitter(newAdminMail));
+  
     saveStringToFlash("BPMSID",newBPMSID);
     saveStringToFlash("area",newArea);
     saveStringToFlash("uploadDelay",newUploadDelay);
@@ -215,17 +281,6 @@ String SaveParamToNVS(){
     saveStringToFlash("recipient4",recipient4);
     saveStringToFlash("systemStatus",newSystemStatus);
     newSaveParam="Parameters saved";
-    if(!hold){
-      saveStringToFlash("ssid",newSSID);
-      saveStringToFlash("password",newPassword);
-      saveStringToFlash("pressureA",newPressureA);
-      saveStringToFlash("pressureB",newPressureB);
-      saveStringToFlash("sensorA",newSensorA);
-      saveStringToFlash("sensorB",newSensorB);
-      Serial.println("Setup data updated");
-    }else{
-      Serial.println("Setup data not updated");
-    }
     Serial.println("Parameters saved to NVS");
     loadParameters();
     return("Parameters saved to NVS");
@@ -247,31 +302,74 @@ void loadParameters(){
     recipient4=readFlash("recipient4");
     systemStatus=readFlash("systemStatus");
     saveParam=readFlash("saveParam");
-    //ssid=readFlash("ssid");
-    //password=readFlash("password");
+    readSSID();
+    readPassword();
     pressureA=readFlash("pressureA").toFloat();
     pressureB=readFlash("pressureB").toFloat();
     sensorA=readFlash("sensorA").toInt();
     sensorB=readFlash("sensorB").toInt();
     Serial.println(autoMode());
     Serial.println("New Values: "+BPMSID+" "+area+" "+uploadDelay+" "+emailDelay+" "+cutoff+" "+recipient0+","+recipient1+","+recipient2+","+recipient3+","+recipient4+","+systemStatus+" "+saveParam);
-    //Serial.println("New Setup Values: "+ssid+" "+password+" "+pressureA+" "+pressureB+" "+sensorA+" "+sensorB);    
-    Serial.println("New Setup data : ");
-    Serial.println("ssid : ");
-    Serial.println(ssid);
-    Serial.println("password : ");
-    Serial.println(password);
-    Serial.println("pressureA : ");
-    Serial.println(pressureA);
-    Serial.println("pressureB : ");
-    Serial.println(pressureB);
-    Serial.println("sensorA : ");
-    Serial.println(sensorA);
-    Serial.println("sensorB : ");
-    Serial.println(sensorB);
-
     Serial.println("Parameters updated");
     loading=loading+10;
     loadView();
 }
 
+
+void saveCredentials(){
+  Serial.println("Old credentials");
+  readSSID();
+  readPassword();
+  Serial.print("Save new SSID : ");
+  Serial.println(newSSID);
+  Serial.print("Save new Password : ");
+  Serial.println(newPassword);
+
+  Serial.println("Credentials updating"); 
+  saveStringToFlash("ssid",newSSID);
+  saveStringToFlash("password",newPassword);
+  readSSID();
+  readPassword();
+  Serial.println("Credentials updated");   
+
+  Serial.println("New Setup data : ");
+  Serial.print("ssid : ");
+  Serial.println(ssid);
+  Serial.print("password : ");
+  Serial.println(password);
+}
+
+void saveCalibration(){
+  Serial.println("Old calibration");
+  pressureA=readFlash("pressureA").toFloat();
+  pressureB=readFlash("pressureB").toFloat();
+  sensorA=readFlash("sensorA").toInt();
+  sensorB=readFlash("sensorB").toInt();
+
+  Serial.println("pressureA : ");
+  Serial.println(pressureA);
+  Serial.println("pressureB : ");
+  Serial.println(pressureB);
+  Serial.println("sensorA : ");
+  Serial.println(sensorA);
+  Serial.println("sensorB : ");
+  Serial.println(sensorB);
+
+  saveStringToFlash("pressureA",newPressureA);
+  saveStringToFlash("pressureB",newPressureB);
+  saveStringToFlash("sensorA",newSensorA);
+  saveStringToFlash("sensorB",newSensorB);
+  Serial.println("Calibrated");
+
+  Serial.println("New calibration");
+  pressureA=readFlash("pressureA").toFloat();
+  pressureB=readFlash("pressureB").toFloat();
+  sensorA=readFlash("sensorA").toInt();
+  sensorB=readFlash("sensorB").toInt();
+
+}
+
+void loadCredentials(){
+  readSSID();
+  readPassword();
+}

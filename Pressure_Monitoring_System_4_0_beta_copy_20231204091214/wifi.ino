@@ -5,8 +5,8 @@
 int tryMillis=0;
 
 
-const char * ssid = "LiquidSulphuric";
-const char * password = "H2SO4(l)";
+char * ssid;
+char * password;
 
 
 void setupWifi() {

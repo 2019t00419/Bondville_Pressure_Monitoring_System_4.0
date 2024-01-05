@@ -26,6 +26,9 @@ int startSync=36;
 int loadingSend=0;
 int loadingSync=0;
 
+bool calibrated=false;
+bool credUpdated=false;
+
 // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
 // The pins for I2C are defined by the Wire-library. 
 // On an arduino UNO:       A4(SDA), A5(SCL)
@@ -220,28 +223,36 @@ void defaultView(){
 
 
 void updateView(){
-  xCursorTitle=centerText("SETUP MODE",2);
+  xCursorTitle=centerText("SETUP MODE",1);
   xCursorMAC=centerMAC(1);
   xCursorSSID=alignRightSSID();
   xCursorPWD=alignRightPWD();
   xCursorSens=alignRightSens();
   display.clearDisplay();  
   for(int i=0;i<128;i++){
-    display.drawPixel(i,32,SSD1306_WHITE);
-    display.drawPixel(i,63,SSD1306_WHITE);
-  }for(int j=32;j<64;j++){
+    display.drawPixel(i,0,SSD1306_WHITE);
+    for(int j=0;j<10;j++){
+      display.drawPixel(i,j,SSD1306_WHITE);
+    }
+  }
+  for(int i=0;i<128;i++){
+    display.drawPixel(i,22,SSD1306_WHITE);
+    display.drawPixel(i,52,SSD1306_WHITE);
+  }for(int j=22;j<53;j++){
     display.drawPixel(0,j,SSD1306_WHITE);
     display.drawPixel(127,j,SSD1306_WHITE);
   }
   display.setCursor((128-xCursorTitle)/2,1);
-  display.setTextSize(2);
-  display.println("SETUP MODE");
   display.setTextSize(1);
-  display.setCursor((128-xCursorMAC)/2,23);
+  display.setTextColor(SSD1306_BLACK, SSD1306_WHITE);
+  display.println("SETUP MODE");
+  display.setTextColor(SSD1306_WHITE, SSD1306_BLACK);
+  display.setTextSize(1);
+  display.setCursor((128-xCursorMAC)/2,14);
   display.print("MAC ");
   display.println(WiFi.macAddress());
   display.setTextSize(1);
-  display.setCursor(30,36);
+  display.setCursor(30,26);
   display.print("SSID: "); 
   display.setCursor(125-xCursorSSID,display.getCursorY());
   display.println(APssid);
@@ -253,7 +264,18 @@ void updateView(){
   display.print("Sensor: ");
   display.setCursor(125-xCursorSens,display.getCursorY());
   display.print(readSensor());
-  display.drawBitmap(3,36,update_bmp, 24, 24, 1);
+  display.drawBitmap(3,27,update_bmp, 24, 24, 1);
+  if(credUpdated){
+    display.setCursor(6,55);
+    display.print("Credentials Updated");
+  }else if(calibrated){
+    display.setCursor(33,55);
+    display.print("Calibrated");
+  }else{
+    display.setCursor(15,55);
+    display.print("IP : ");
+    display.println(WiFi.softAPIP());
+  }
   display.display();
 }
 
