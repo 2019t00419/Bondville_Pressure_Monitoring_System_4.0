@@ -12,6 +12,8 @@ float cutoff;
 String systemStatus;
 String saveParam;
 String adminMail;
+String indicator1;
+String indicator2;
 
 String newBPMSID;
 String newArea;
@@ -21,7 +23,8 @@ String newCutoff;
 String newSystemStatus;
 String newSaveParam;
 String newAdminMail;
-
+String newIndicator1;
+String newIndicator2;
 
 float pressureA;
 float pressureB;
@@ -36,7 +39,8 @@ float cutoffIndex=0;
 int systemStatusIndex=0;
 int saveParamIndex=0;
 int adminMailIndex=0;
-
+int indicator1Index=0;
+int indicator2Index=0;
 
 char read_ssid[32];
 size_t length = sizeof(read_ssid);
@@ -224,6 +228,10 @@ String split(String strPayload){
       systemStatusIndex=i+1;
     }else if(strItem.equals("Save Parameters")){
       saveParamIndex=i+1;
+    }else if(strItem.equals("indicator1")){
+      indicator1Index=i+1;
+    }else if(strItem.equals("indicator2")){
+      indicator2Index=i+1;
     }
 
     if(i==BPMSIDIndex){
@@ -242,10 +250,14 @@ String split(String strPayload){
       newSystemStatus=item;
     }else if(i==saveParamIndex){
       newSaveParam=item;
+    }else if(i==indicator1Index){
+      newIndicator1=item;
+    }else if(i==indicator2Index){
+      newIndicator2=item;
     }
   }
   Serial.println("Payload Splitted");
-  return(newBPMSID+"\n"+newArea+"\n"+newUploadDelay+"\n"+newEmailDelay+"\n"+newCutoff+"\n"+newAdminMail+"\n"+newSystemStatus+"\n"+newSaveParam);
+  return(newBPMSID+"\n"+newArea+"\n"+newUploadDelay+"\n"+newEmailDelay+"\n"+newCutoff+"\n"+newAdminMail+"\n"+newSystemStatus+"\n"+newSaveParam+"\n"+newIndicator1+"\n"+newIndicator2);
 }
 
 
@@ -264,8 +276,10 @@ String SaveParamToNVS(){
     recipient4=readFlash("recipient4");
     systemStatus=readFlash("systemStatus");
     saveParam=readFlash("saveParam");
+    indicator1=readFlash("Indicator1");
+    indicator2=readFlash("Indicator2");
     Serial.println("Parameters updating");
-    Serial.println("Old Values: "+BPMSID+" "+area+" "+uploadDelay+" "+emailDelay+" "+cutoff+" "+recipient0+","+recipient1+","+recipient2+","+recipient3+","+recipient4+","+systemStatus+" "+saveParam);
+    Serial.println("Old Values: "+BPMSID+" "+area+" "+uploadDelay+" "+emailDelay+" "+cutoff+" "+recipient0+","+recipient1+","+recipient2+","+recipient3+","+recipient4+","+systemStatus+" "+saveParam+" "+indicator1+" "+indicator2);
     //Serial.println("Old Setup Values: "+pressureA+" "+pressureB+" "+sensorA+" "+sensorB);
     Serial.println(emailSplitter(newAdminMail));
   
@@ -280,6 +294,8 @@ String SaveParamToNVS(){
     saveStringToFlash("recipient3",recipient3);
     saveStringToFlash("recipient4",recipient4);
     saveStringToFlash("systemStatus",newSystemStatus);
+    saveStringToFlash("Indicator1",newIndicator1);
+    saveStringToFlash("Indicator2",newIndicator2);
     newSaveParam="Parameters saved";
     Serial.println("Parameters saved to NVS");
     loadParameters();
@@ -302,6 +318,8 @@ void loadParameters(){
     recipient4=readFlash("recipient4");
     systemStatus=readFlash("systemStatus");
     saveParam=readFlash("saveParam");
+    indicator1=readFlash("Indicator1");
+    indicator2=readFlash("Indicator2");
     readSSID();
     readPassword();
     pressureA=readFlash("pressureA").toFloat();
@@ -309,7 +327,7 @@ void loadParameters(){
     sensorA=readFlash("sensorA").toInt();
     sensorB=readFlash("sensorB").toInt();
     Serial.println(autoMode());
-    Serial.println("New Values: "+BPMSID+" "+area+" "+uploadDelay+" "+emailDelay+" "+cutoff+" "+recipient0+","+recipient1+","+recipient2+","+recipient3+","+recipient4+","+systemStatus+" "+saveParam);
+    Serial.println("New Values: "+BPMSID+" "+area+" "+uploadDelay+" "+emailDelay+" "+cutoff+" "+recipient0+","+recipient1+","+recipient2+","+recipient3+","+recipient4+","+systemStatus+" "+saveParam+" "+indicator1+" "+indicator2);
     Serial.println("Parameters updated");
     loading=loading+10;
     loadView();

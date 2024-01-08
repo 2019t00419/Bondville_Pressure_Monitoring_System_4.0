@@ -15,29 +15,12 @@ extern char * password;
 extern const char * APssid;
 extern const char * APpassword;
 
-extern float pressureA;
-extern float pressureB;
-extern int sensorA;
-extern int sensorB;
 
 extern String newSSID;
 extern String newPassword;
-extern String newPressureA;
-extern String newPressureB;
-extern String newSensorA;
-extern String newSensorB;
 
 
 extern String GOOGLE_SCRIPT_ID;
-
-extern String BPMSID;
-extern String area;
-extern int uploadDelay;
-extern int emailDelay;
-extern float cutoff;
-extern String systemStatus;
-extern String saveParam;
-extern String adminMail;
 
 extern String payload;
 

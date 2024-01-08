@@ -154,9 +154,9 @@ void sendToIndicator(){
     HTTPClient http;
     String urls;
     if(alert){
-      urls="http://192.168.8.101/alarm/on";
+      urls="http://"+indicator1+"/alarm/on";
     }else{
-      urls="http://192.168.8.101/alarm/off";
+      urls="http://"+indicator1+"/alarm/off";
     }
     Serial.println(urls);
     Serial.println("Making a request. Waiting for response");
@@ -173,6 +173,7 @@ void sendToIndicator(){
         Serial.println("Error in receiving");
         Serial.println(httpCode);
         sentRequest=false;
+        sendToIndicator();
         return;
       }
       Serial.println(payload);

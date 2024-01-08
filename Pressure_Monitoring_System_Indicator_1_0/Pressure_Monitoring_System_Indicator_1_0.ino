@@ -58,38 +58,6 @@ void loop(void) {
     }else{
       showMode(); //display modes  
     }
-  }else{
-    hold(); //identify button hold
-    showMode(); //display modes  
-    createAP();
-    if((millis()-syncWait)>syncDelay){
-      sentRequest=false;
-      //updateIP();
-      syncWait=millis();
-    }if((millis()-uploadWait)>uploadDelay){
-      sentRequest=false;
-      //sendingScreen();
-      //sendData();
-      uploadWait=millis();
-    }if(7.0<cutoff){
-      if((systemStatus=="Online") || (autoOnline && systemStatus=="Auto")){
-        if((millis()-mailWait)>emailDelay || firstRun){
-          //sendingMailScreen();
-          Serial.println(autoOnline);
-          Serial.println("low pressure mail");
-          mailWait=millis();
-        }
-      }
-      if((millis()-uploadWait)>uploadDelay || firstRun){
-        sentRequest=false;
-        //sendingScreen();
-        //sendData();
-        Serial.println("low pressure upload");
-        uploadWait=millis();
-      }
-      firstRun=false;
-    }else{
-    }
   }
 }
 

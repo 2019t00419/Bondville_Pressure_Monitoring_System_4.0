@@ -180,27 +180,13 @@ void modeView(){
 
 
 void defaultView(){
-  display.clearDisplay();  
-  xCursorPressure=centerPressure(7.0,2);
-  xCursorID=centerText(BPMSID,1);
-  xCursorArea=centerText(area,1);
-  xCursorData=centerUpload(uploadDelay,1);
-  xCursorMail=centerMail(emailDelay,1);
-  xCursorCutoff=centerCutoff(cutoff,1);
-  xCursorWIFI=centerWIFI(1);
+  display.clearDisplay(); 
 
   //centering text
   if(WiFi.status() == WL_CONNECTED){
     display.drawBitmap(112,0,signal_bmp, 12, 12, 1);
   }else{
     display.drawBitmap(112,0,signalLost_bmp, 12, 12, 1);
-  }
-  if(systemStatus.equals("Online")){
-    display.drawBitmap(0,0,online_bmp, 12, 12, 1);
-  }else if(systemStatus.equals("Offline")){
-    display.drawBitmap(0,0,offline_bmp, 12, 12, 1);
-  }else if(systemStatus.equals("Auto")){
-    display.drawBitmap(0,0,auto_bmp, 12, 12, 1);
   }
   for(int i=0;i<128;i++){
     display.drawPixel(i,15,SSD1306_WHITE);

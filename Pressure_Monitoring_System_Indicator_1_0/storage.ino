@@ -4,38 +4,47 @@
 char* result;
 
 #include "StringSplitter.h"
-String BPMSID;
-String area;
-int uploadDelay;
-int emailDelay;
-float cutoff;
-String systemStatus;
-String saveParam;
-String adminMail;
-
-String newBPMSID;
-String newArea;
-String newUploadDelay;
-String newEmailDelay;
-String newCutoff;
-String newSystemStatus;
-String newSaveParam;
-String newAdminMail;
 
 
-float pressureA;
-float pressureB;
-int sensorA;
-int sensorB;
+int BPMS0001AIndex=0;
+int BPMS0002AIndex=0;
+int BPMS0003AIndex=0;
+int BPMS0004AIndex=0;
+int BPMS0005AIndex=0;
+int BPMS0006AIndex=0;
 
-int BPMSIDIndex=0;
-int areaIndex=0;
-int uploadDelayIndex=0;
-int emailDelayIndex=0;
-float cutoffIndex=0;
-int systemStatusIndex=0;
-int saveParamIndex=0;
-int adminMailIndex=0;
+int BPMS0001PIndex=0;
+int BPMS0002PIndex=0;
+int BPMS0003PIndex=0;
+int BPMS0004PIndex=0;
+int BPMS0005PIndex=0;
+int BPMS0006PIndex=0;
+
+int BPMS0001SIndex=0;
+int BPMS0002SIndex=0;
+int BPMS0003SIndex=0;
+int BPMS0004SIndex=0;
+int BPMS0005SIndex=0;
+int BPMS0006SIndex=0;
+
+String BPMS0001A;
+String BPMS0001P;
+String BPMS0001S;
+String BPMS0002A;
+String BPMS0002P;
+String BPMS0002S;
+String BPMS0003A;
+String BPMS0003P;
+String BPMS0003S;
+String BPMS0004A;
+String BPMS0004P;
+String BPMS0004S;
+String BPMS0005A;
+String BPMS0005P;
+String BPMS0005S;
+String BPMS0006A;
+String BPMS0006P;
+String BPMS0006S;
 
 
 char read_ssid[32];
@@ -208,95 +217,89 @@ String split(String strPayload){
 
     //Serial.println(item);
     String strItem=String(item);
-    if(strItem.equals("BPMS ID")){
-      BPMSIDIndex=i+1;
-    }else if(strItem.equals("Deployed Area")){
-      areaIndex=i+1;
-    }else if(strItem.equals("Upload Delay")){
-      uploadDelayIndex=i+1;
-    }else if(strItem.equals("Email Delay")){
-      emailDelayIndex=i+1;
-    }else if(strItem.equals("Cutoff Value")){
-      cutoffIndex=i+1;
-    }else if(strItem.equals("Admin E-mail")){
-      adminMailIndex=i+1;
-    }else if(strItem.equals("System Status")){
-      systemStatusIndex=i+1;
-    }else if(strItem.equals("Save Parameters")){
-      saveParamIndex=i+1;
+    if(strItem.equals("areaBPMS001")){
+      BPMS0001AIndex=i+1;
+    }else if(strItem.equals("areaBPMS002")){
+      BPMS0002AIndex=i+1;
+    }else if(strItem.equals("areaBPMS003")){
+      BPMS0003AIndex=i+1;
+    }else if(strItem.equals("areaBPMS004")){
+      BPMS0004AIndex=i+1;
+    }else if(strItem.equals("areaBPMS005")){
+      BPMS0005AIndex=i+1;
+    }else if(strItem.equals("areaBPMS006")){
+      BPMS0006AIndex=i+1;
+    }else if(strItem.equals("pressureBPMS001")){
+      BPMS0001PIndex=i+1;
+    }else if(strItem.equals("pressureBPMS002")){
+      BPMS0002PIndex=i+1;
+    }else if(strItem.equals("pressureBPMS003")){
+      BPMS0003PIndex=i+1;
+    }else if(strItem.equals("pressureBPMS004")){
+      BPMS0004PIndex=i+1;
+    }else if(strItem.equals("pressureBPMS005")){
+      BPMS0005SIndex=i+1;
+    }else if(strItem.equals("pressureBPMS006")){
+      BPMS0006SIndex=i+1;
+    }else if(strItem.equals("alertBPMS001")){
+      BPMS0001SIndex=i+1;
+    }else if(strItem.equals("alertBPMS002")){
+      BPMS0002SIndex=i+1;
+    }else if(strItem.equals("alertBPMS003")){
+      BPMS0003SIndex=i+1;
+    }else if(strItem.equals("alertBPMS004")){
+      BPMS0004SIndex=i+1;
+    }else if(strItem.equals("alertBPMS005")){
+      BPMS0005SIndex=i+1;
+    }else if(strItem.equals("alertBPMS006")){
+      BPMS0006SIndex=i+1;
     }
 
-    if(i==BPMSIDIndex){
-      newBPMSID=item;
-    }else if(i==areaIndex){
-      newArea=item;
-    }else if(i==uploadDelayIndex){
-      newUploadDelay=item;
-    }else if(i==emailDelayIndex){
-      newEmailDelay=item;
-    }else if(i==cutoffIndex){
-      newCutoff=item;
-    }else if(i==adminMailIndex){
-      newAdminMail=item;
-    }else if(i==systemStatusIndex){
-      newSystemStatus=item;
-    }else if(i==saveParamIndex){
-      newSaveParam=item;
+    if(i==BPMS0001AIndex){
+      BPMS0001A=item;
+    }else if(i==BPMS0002AIndex){
+      BPMS0002A=item;
+    }else if(i==BPMS0003AIndex){
+      BPMS0003A=item;
+    }else if(i==BPMS0004AIndex){
+      BPMS0004A=item;
+    }else if(i==BPMS0005AIndex){
+      BPMS0005A=item;
+    }else if(i==BPMS0006AIndex){
+      BPMS0006A=item;
+    }else if(i==BPMS0001PIndex){
+      BPMS0001P=item;
+    }else if(i==BPMS0002PIndex){
+      BPMS0002P=item;
+    }else if(i==BPMS0003PIndex){
+      BPMS0003P=item;
+    }else if(i==BPMS0004PIndex){
+      BPMS0004P=item;
+    }else if(i==BPMS0005PIndex){
+      BPMS0005P=item;
+    }else if(i==BPMS0006PIndex){
+      BPMS0006P=item;
+    }else if(i==BPMS0001SIndex){
+      BPMS0001S=item;
+    }else if(i==BPMS0002SIndex){
+      BPMS0002S=item;
+    }else if(i==BPMS0003SIndex){
+      BPMS0003S=item;
+    }else if(i==BPMS0004SIndex){
+      BPMS0004S=item;
+    }else if(i==BPMS0005SIndex){
+      BPMS0005S=item;
+    }else if(i==BPMS0006SIndex){
+      BPMS0006S=item;
     }
   }
   Serial.println("Payload Splitted");
-  return(newBPMSID+"\n"+newArea+"\n"+newUploadDelay+"\n"+newEmailDelay+"\n"+newCutoff+"\n"+newAdminMail+"\n"+newSystemStatus+"\n"+newSaveParam);
-}
-
-
-
-String SaveParamToNVS(){
-  if(newSaveParam=="Update Parameters"){
-    BPMSID=readFlash("BPMSID");
-    area=readFlash("area");
-    uploadDelay=readFlash("uploadDelay").toInt();
-    emailDelay=readFlash("emailDelay").toInt();
-    cutoff=readFlash("cutoff").toFloat();
-    systemStatus=readFlash("systemStatus");
-    saveParam=readFlash("saveParam");
-    Serial.println("Parameters updating");
-    Serial.println("Old Values: "+BPMSID+" "+area+" "+uploadDelay+" "+emailDelay+" "+cutoff+" "+","+systemStatus+" "+saveParam);
-    //Serial.println("Old Setup Values: "+pressureA+" "+pressureB+" "+sensorA+" "+sensorB);
-  
-    saveStringToFlash("BPMSID",newBPMSID);
-    saveStringToFlash("area",newArea);
-    saveStringToFlash("uploadDelay",newUploadDelay);
-    saveStringToFlash("emailDelay",newEmailDelay);
-    saveStringToFlash("cutoff",newCutoff);
-    saveStringToFlash("systemStatus",newSystemStatus);
-    newSaveParam="Parameters saved";
-    Serial.println("Parameters saved to NVS");
-    loadParameters();
-    return("Parameters saved to NVS");
-  }else{
-    return("Permission not granted for saving parameters to NVS");
-  }
-}
-
-void loadParameters(){
-    BPMSID=readFlash("BPMSID");
-    area=readFlash("area");
-    uploadDelay=readFlash("uploadDelay").toInt();
-    emailDelay=readFlash("emailDelay").toInt();
-    cutoff=readFlash("cutoff").toFloat();
-    systemStatus=readFlash("systemStatus");
-    saveParam=readFlash("saveParam");
-    readSSID();
-    readPassword();
-    pressureA=readFlash("pressureA").toFloat();
-    pressureB=readFlash("pressureB").toFloat();
-    sensorA=readFlash("sensorA").toInt();
-    sensorB=readFlash("sensorB").toInt();
-    Serial.println(autoMode());
-    Serial.println("New Values: "+BPMSID+" "+area+" "+uploadDelay+" "+emailDelay+" "+cutoff+" "+","+systemStatus+" "+saveParam);
-    Serial.println("Parameters updated");
-    loading=loading+10;
-    loadView();
+  return( BPMS0001A+" : "+BPMS0001P+"  "+ BPMS0001S+"\n"+
+          BPMS0002A+" : "+BPMS0002P+"  "+ BPMS0002S+"\n"+
+          BPMS0003A+" : "+BPMS0003P+"  "+ BPMS0003S+"\n"+
+          BPMS0004A+" : "+BPMS0004P+"  "+ BPMS0004S+"\n"+
+          BPMS0005A+" : "+BPMS0005P+"  "+ BPMS0005S+"\n"+
+          BPMS0006A+" : "+BPMS0006P+"  "+ BPMS0006S+"\n");
 }
 
 
@@ -323,35 +326,6 @@ void saveCredentials(){
   Serial.println(password);
 }
 
-void saveCalibration(){
-  Serial.println("Old calibration");
-  pressureA=readFlash("pressureA").toFloat();
-  pressureB=readFlash("pressureB").toFloat();
-  sensorA=readFlash("sensorA").toInt();
-  sensorB=readFlash("sensorB").toInt();
-
-  Serial.println("pressureA : ");
-  Serial.println(pressureA);
-  Serial.println("pressureB : ");
-  Serial.println(pressureB);
-  Serial.println("sensorA : ");
-  Serial.println(sensorA);
-  Serial.println("sensorB : ");
-  Serial.println(sensorB);
-
-  saveStringToFlash("pressureA",newPressureA);
-  saveStringToFlash("pressureB",newPressureB);
-  saveStringToFlash("sensorA",newSensorA);
-  saveStringToFlash("sensorB",newSensorB);
-  Serial.println("Calibrated");
-
-  Serial.println("New calibration");
-  pressureA=readFlash("pressureA").toFloat();
-  pressureB=readFlash("pressureB").toFloat();
-  sensorA=readFlash("sensorA").toInt();
-  sensorB=readFlash("sensorB").toInt();
-
-}
 
 void loadCredentials(){
   readSSID();

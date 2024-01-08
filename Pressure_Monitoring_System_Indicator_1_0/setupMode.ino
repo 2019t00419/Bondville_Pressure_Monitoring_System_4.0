@@ -465,7 +465,6 @@ void createAP(){
         Serial.println(newSensorB);
         credUpdated=false;
         calibrated=true;
-        saveCalibration();
       }
       request->send_P(200, "text/html", done_html);
       });
