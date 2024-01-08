@@ -32,8 +32,7 @@ void setup(void) {
   loadCredentials();
   setupWifi();
   setupTime();
-  loadParameters();
-  updatePara();
+  updateIP();
 }
 
 
@@ -65,8 +64,7 @@ void loop(void) {
     createAP();
     if((millis()-syncWait)>syncDelay){
       sentRequest=false;
-      //syncingScreen();
-      //updatePara(); 
+      //updateIP();
       syncWait=millis();
     }if((millis()-uploadWait)>uploadDelay){
       sentRequest=false;
@@ -76,7 +74,6 @@ void loop(void) {
     }if(7.0<cutoff){
       if((systemStatus=="Online") || (autoOnline && systemStatus=="Auto")){
         if((millis()-mailWait)>emailDelay || firstRun){
-          digitalWrite(alarmLamp,HIGH);
           //sendingMailScreen();
           Serial.println(autoOnline);
           Serial.println("low pressure mail");
@@ -92,7 +89,6 @@ void loop(void) {
       }
       firstRun=false;
     }else{
-        digitalWrite(alarmLamp,LOW);
     }
   }
 }

@@ -19,6 +19,9 @@ bool reconnecting=false;
 bool firstRun=true;
 bool initialRun=true;
 
+bool turnOffAlert=false;
+bool alert=false;
+
 
 
 void setup(void) {
@@ -78,7 +81,10 @@ void loop(void) {
       if((systemStatus=="Online") || (autoOnline && systemStatus=="Auto")){
         if((millis()-mailWait)>emailDelay || firstRun){
           digitalWrite(alarmLamp,HIGH);
+          alert=true;
           mailSent=false;
+          turnOffAlert=true;
+          sendToIndicator();
           sendingMailScreen();
           Serial.println(autoOnline);
           sendMail();
@@ -96,6 +102,11 @@ void loop(void) {
       firstRun=false;
     }else{
         digitalWrite(alarmLamp,LOW);
+        alert=false;
+        if(turnOffAlert){
+          sendToIndicator();
+          turnOffAlert=false;
+        }
     }
   }
 }

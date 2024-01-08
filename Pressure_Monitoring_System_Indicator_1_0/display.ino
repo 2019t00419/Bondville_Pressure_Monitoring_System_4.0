@@ -149,7 +149,8 @@ void showMode(){
   if (!btnHold){
     modeView();
   }else{
-    updateView();
+    //updateView();
+    modeView();
   }
   display.display();
 }
@@ -157,14 +158,8 @@ void showMode(){
 
 
 void modeView(){
-  defaultView();
   if(modeNo==0){    
-    display.setCursor((128-xCursorID)/2,38);
-    display.println("Indicator1");
-    //display.println("BPMSID");
-    display.setCursor((128-xCursorArea)/2,display.getCursorY()+4);
-    display.println("Panel Room");
-    //display.println(area);
+  defaultView();
   }else if(modeNo==1){    
     display.setCursor((128-xCursorCutoff)/2,38);
     display.println("Ring 1");
@@ -207,18 +202,46 @@ void defaultView(){
   }else if(systemStatus.equals("Auto")){
     display.drawBitmap(0,0,auto_bmp, 12, 12, 1);
   }
-  display.setTextSize(2);
-  display.setCursor((128-xCursorPressure)/2,15);
-  display.print(7.0);
-  display.println(" Bar");
-  display.setTextSize(1);
   for(int i=0;i<128;i++){
-    display.drawPixel(i,32,SSD1306_WHITE);
+    display.drawPixel(i,15,SSD1306_WHITE);
+    //display.drawPixel(i,27,SSD1306_WHITE);
+    display.drawPixel(i,39,SSD1306_WHITE);
+    //display.drawPixel(i,51,SSD1306_WHITE);
     display.drawPixel(i,63,SSD1306_WHITE);
-  }for(int j=32;j<64;j++){
+  }for(int j=15;j<64;j++){
     display.drawPixel(0,j,SSD1306_WHITE);
+    display.drawPixel(42,j,SSD1306_WHITE);
+    display.drawPixel(84,j,SSD1306_WHITE);
     display.drawPixel(127,j,SSD1306_WHITE);
   }
+  display.setTextSize(1);
+  display.setCursor(3,18);
+  display.println("Ring 1");
+  display.setCursor(45,18);
+  display.println("Ring 2");
+  display.setCursor(87,18);
+  display.println("Ring 3");
+
+  display.setCursor(3,31);
+  display.println("7.1");
+  display.setCursor(45,31);
+  display.println("7.2");
+  display.setCursor(87,31);
+  display.println("7.3");
+
+  display.setCursor(3,42);
+  display.println("Veit");
+  display.setCursor(45,42);
+  display.println("Macpi");
+  display.setCursor(87,42);
+  display.println("Dev");
+  
+  display.setCursor(3,54);
+  display.println("7.4");
+  display.setCursor(45,54);
+  display.println("7.5");
+  display.setCursor(87,54);
+  display.println("7.6");
 }
 
 

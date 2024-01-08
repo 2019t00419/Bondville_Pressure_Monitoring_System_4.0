@@ -6,23 +6,27 @@
 const char* ntpServer = "pool.ntp.org";
 const long  gmtOffset_sec = 19800;
 const int   daylightOffset_sec = 0;
+String ip;
 
-String GOOGLE_SCRIPT_ID_FOR_PARA = "AKfycbwoX7VVgY9fZNOI83Qx1-vcqnjhbQFtNyXQKYyA-BP7AslRkKeNWo6C_YvG_RJrNA";
-String GOOGLE_SCRIPT_ID_FOR_DATA = "AKfycbzvHEHrD6wY5TEpzZRJ8SZ97s79Oe1E7FbqrKdAh8Ww8cVSZURErhg05qIkd_JXsShj";
+String GOOGLE_SCRIPT_ID_FOR_IP = "AKfycbzvHEHrD6wY5TEpzZRJ8SZ97s79Oe1E7FbqrKdAh8Ww8cVSZURErhg05qIkd_JXsShj";
 String data=""; 
 bool sentRequest=false;
 String payload;
  
 WiFiClientSecure client;
 
-void updatePara(){
-  Serial.println("Updating parameters");
+void updateIP(){
+  Serial.println("Updating DHCP IP address");
   while(payload.equals("")){
+    ip = ipToString(WiFi.localIP());
+    Serial.println(WiFi.localIP());
+    Serial.println(ip);
     if(!sentRequest){
       sentRequest=true;  
       HTTPClient http;
-      String url="https://script.google.com/macros/s/"+GOOGLE_SCRIPT_ID_FOR_PARA+"/exec?read";
-      //   Serial.print(url);
+
+      String url="https://script.google.com/macros/s/"+GOOGLE_SCRIPT_ID_FOR_IP+"/exec?ip="+ip;
+      Serial.print(url);
       Serial.println("Making a request. Waiting for response");
       http.begin(url.c_str()); //Specify the URL and certificate
       http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
@@ -75,7 +79,7 @@ void confirmUpdate(){
   if (WiFi.status() == WL_CONNECTED) {
       static bool flag = false;
       //https://script.google.com/macros/s/AKfycbwoX7VVgY9fZNOI83Qx1-vcqnjhbQFtNyXQKYyA-BP7AslRkKeNWo6C_YvG_RJrNA/exec?paramStatus=Parameters%20saved
-      String urlFinal = "https://script.google.com/macros/s/"+GOOGLE_SCRIPT_ID_FOR_PARA+"/exec?paramStatus=Parameters%20saved" ;
+      String urlFinal = "https://script.google.com/macros/s/"+GOOGLE_SCRIPT_ID_FOR_IP+"/exec?paramStatus=Parameters%20saved" ;
       Serial.print("send data to spreadsheet:");
       Serial.println(urlFinal);
       HTTPClient http;
@@ -104,47 +108,6 @@ void setupTime()
   loadView();
 }
 
-void sendData(){
-  if (WiFi.status() == WL_CONNECTED) {
-      static bool flag = false;
-      struct tm timeinfo;
-      if (!getLocalTime(&timeinfo)) {
-        Serial.println("Failed to obtain time");
-        return;
-      }
-      loadingSend=loadingSend+20;
-      loadSend();
-      char timeStringBuff[50]; //50 chars should be enough
-      strftime(timeStringBuff, sizeof(timeStringBuff), "%H:%M %B %d  %Y", &timeinfo);
-      String asString(timeStringBuff);
-      asString.replace(" ", "%20");
-      Serial.print("Time:");
-      Serial.println(asString);
-      String urlFinal = "https://script.google.com/macros/s/"+GOOGLE_SCRIPT_ID_FOR_DATA+"/exec?"+"timestamp=" + asString + "&pressure=" + String(7.0) + "&cutoff=" + String(cutoff)+"&systemStatus=" + systemStatus+"&BPMSID=" + BPMSID;
-      Serial.print("send data to spreadsheet:");
-      loadingSend=loadingSend+20;
-      loadSend();
-      Serial.println(urlFinal);
-      HTTPClient http;
-      http.begin(urlFinal.c_str());
-      loadingSend=loadingSend+20;
-      loadSend();
-      http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
-      int httpCode = http.GET(); 
-      Serial.print("HTTP Status Code: ");
-      Serial.println(httpCode);
-      loadingSend=loadingSend+20;
-      loadSend();
-      //---------------------------------------------------------------------
-      //getting response from google sheet
-      String payload1;
-      if (httpCode > 0) {
-          payload1 = http.getString();
-          Serial.println("Payload: "+payload1);    
-      }
-      loadingSend=loadingSend+20;
-      loadSend();
-      //---------------------------------------------------------------------
-      http.end();
-    }
+String ipToString(const IPAddress& ip) {
+  return String(ip[0]) + "." + String(ip[1]) + "." + String(ip[2]) + "." + String(ip[3]);
 }

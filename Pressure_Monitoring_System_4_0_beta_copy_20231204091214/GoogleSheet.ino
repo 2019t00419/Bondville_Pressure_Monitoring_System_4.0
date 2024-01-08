@@ -120,7 +120,7 @@ void sendData(){
       asString.replace(" ", "%20");
       Serial.print("Time:");
       Serial.println(asString);
-      String urlFinal = "https://script.google.com/macros/s/"+GOOGLE_SCRIPT_ID_FOR_DATA+"/exec?"+"timestamp=" + asString + "&pressure=" + String(pressure) + "&cutoff=" + String(cutoff)+"&systemStatus=" + systemStatus+"&BPMSID=" + BPMSID;
+      String urlFinal = "https://script.google.com/macros/s/"+GOOGLE_SCRIPT_ID_FOR_DATA+"/exec?"+"timestamp=" + asString + "&pressure=" + String(pressure) + "&cutoff=" + String(cutoff)+"&systemStatus=" + systemStatus+"&BPMSID=" + BPMSID+"&alert=" + String(alert);
       Serial.print("send data to spreadsheet:");
       loadingSend=loadingSend+20;
       loadSend();
@@ -147,4 +147,59 @@ void sendData(){
       //---------------------------------------------------------------------
       http.end();
     }
+}
+
+void sendToIndicator(){  
+  Serial.println("Sending data to indicator");
+    HTTPClient http;
+    String urls;
+    if(alert){
+      urls="http://192.168.8.101/alarm/on";
+    }else{
+      urls="http://192.168.8.101/alarm/off";
+    }
+    Serial.println(urls);
+    Serial.println("Making a request. Waiting for response");
+    http.begin(urls.c_str()); //Specify the URL and certificate
+    http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
+    int httpCode = http.GET();
+    loadingSync=loadingSync+20;
+    loadSync();
+    if (httpCode > 0) { //Check for the returning code
+      payload = http.getString();
+      if(httpCode==200){
+        Serial.println("Received");
+      }else{
+        Serial.println("Error in receiving");
+        Serial.println(httpCode);
+        sentRequest=false;
+        return;
+      }
+      Serial.println(payload);
+      loading=loading+20;
+      loadView();
+      loadingSync=loadingSync+20;
+      loadSync();
+    }
+    else {
+      Serial.println("Error on HTTP request");
+      return;
+    }
+	http.end();
+  if(payload.equals("error")){
+    Serial.println("Error received. Data not updated");
+    return;
+  }else{
+    Serial.println(split(payload));
+    loadingSync=loadingSync+20;
+    loadSync();
+    Serial.println("New parameters received");
+    Serial.println(SaveParamToNVS());
+    loadingSync=loadingSync+20;
+    loadSync();
+    payload="";
+    confirmUpdate();
+    loadingSync=loadingSync+20;
+    loadSync();
+  }
 }
