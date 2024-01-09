@@ -154,9 +154,9 @@ void sendToIndicator(){
     HTTPClient http;
     String urls;
     if(alert){
-      urls="http://"+indicator1+"/alarm/on";
+      urls="http://"+indicator1+"/BPMS001/on?pressure="+String(pressure);
     }else{
-      urls="http://"+indicator1+"/alarm/off";
+      urls="http://"+indicator1+"/BPMS001/off?pressure="+String(pressure);
     }
     Serial.println(urls);
     Serial.println("Making a request. Waiting for response");

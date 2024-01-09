@@ -18,6 +18,7 @@ bool reconnecting=false;
 
 bool firstRun=true;
 bool initialRun=true;
+bool sendfirstData=true;
 
 bool turnOffAlert=false;
 bool alert=false;
@@ -77,13 +78,24 @@ void loop(void) {
       sendingScreen();
       sendData();
       uploadWait=millis();
-    }if(pressure<cutoff){
+    }if(sendfirstData && !(pressure<cutoff)){
+      alert=false;
+      sendfirstData=false;
+      digitalWrite(alarmLamp,LOW);
+      syncingScreen();
+      sendToIndicator();
+      sendingScreen();
+      sendData();
+    }
+    if(pressure<cutoff){
       if((systemStatus=="Online") || (autoOnline && systemStatus=="Auto")){
+        sendfirstData=true;
         if((millis()-mailWait)>emailDelay || firstRun){
           digitalWrite(alarmLamp,HIGH);
           alert=true;
           mailSent=false;
           turnOffAlert=true;
+          syncingScreen();
           sendToIndicator();
           sendingMailScreen();
           Serial.println(autoOnline);
@@ -103,10 +115,6 @@ void loop(void) {
     }else{
         digitalWrite(alarmLamp,LOW);
         alert=false;
-        if(turnOffAlert){
-          sendToIndicator();
-          turnOffAlert=false;
-        }
     }
   }
 }

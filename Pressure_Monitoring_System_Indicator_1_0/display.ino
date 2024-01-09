@@ -25,7 +25,6 @@ int startSend=36;
 int startSync=36;
 int loadingSend=0;
 int loadingSync=0;
-
 bool calibrated=false;
 bool credUpdated=false;
 
@@ -146,37 +145,14 @@ void showNew(String text){
 }
 
 void showMode(){  
-  if (!btnHold){
-    modeView();
+  if (!btnHold){ 
+    defaultView();
   }else{
-    //updateView();
-    modeView();
+    updateView();
   }
   display.display();
 }
 
-
-
-void modeView(){
-  if(modeNo==0){    
-  defaultView();
-  }else if(modeNo==1){    
-    display.setCursor((128-xCursorCutoff)/2,38);
-    display.println("Ring 1");
-    //display.print(cutoff);
-    display.setCursor((128-xCursorWIFI)/2,display.getCursorY()+4);
-    display.print("BPMS001");
-    //display.println(ssid);
-  }else if(modeNo==2){    
-    display.setCursor((128-xCursorData)/2,38);
-    display.println("Ring 2");
-    //display.println(uploadDelay);
-    display.setCursor((128-xCursorMail)/2,display.getCursorY()+4);
-    display.print("BPMS002");
-    //display.println(emailDelay);
-  }
-  display.display();
-}
 
 
 void defaultView(){
@@ -188,11 +164,10 @@ void defaultView(){
   }else{
     display.drawBitmap(112,0,signalLost_bmp, 12, 12, 1);
   }
+  display.setTextSize(1);
   for(int i=0;i<128;i++){
     display.drawPixel(i,15,SSD1306_WHITE);
-    //display.drawPixel(i,27,SSD1306_WHITE);
     display.drawPixel(i,39,SSD1306_WHITE);
-    //display.drawPixel(i,51,SSD1306_WHITE);
     display.drawPixel(i,63,SSD1306_WHITE);
   }for(int j=15;j<64;j++){
     display.drawPixel(0,j,SSD1306_WHITE);
@@ -200,20 +175,45 @@ void defaultView(){
     display.drawPixel(84,j,SSD1306_WHITE);
     display.drawPixel(127,j,SSD1306_WHITE);
   }
-  display.setTextSize(1);
-  display.setCursor(3,18);
-  display.println("Ring 1");
-  display.setCursor(45,18);
-  display.println("Ring 2");
-  display.setCursor(87,18);
-  display.println("Ring 3");
 
-  display.setCursor(3,31);
-  display.println("7.1");
+
+  if(BPMS0001S.equals("Yes")){
+    if(flashState){
+      for(int i=0;i<42;i++){
+        for(int j=15;j<39;j++){
+        display.drawPixel(i,j,SSD1306_WHITE);
+        }
+      }
+      display.setTextColor(SSD1306_BLACK, SSD1306_WHITE);
+      display.setCursor(3,18);
+      display.println(BPMS0001A);
+      display.setCursor(3,31);
+      display.println(BPMS0001P);
+    }else{
+      display.setTextColor(SSD1306_WHITE, SSD1306_BLACK);
+      display.setCursor(3,18);
+      display.println(BPMS0001A);
+      display.setCursor(3,31);
+      display.println(BPMS0001P);
+    }
+  }else{
+      display.setTextColor(SSD1306_WHITE, SSD1306_BLACK);
+      display.setCursor(3,18);
+      display.println(BPMS0001A);
+      display.setCursor(3,31);
+      display.println(BPMS0001P);
+  }
+  
+  display.setTextColor(SSD1306_WHITE, SSD1306_BLACK);
+  display.setCursor(45,18);
+  display.println(BPMS0002A);
+  display.setCursor(87,18);
+  display.println(BPMS0003A);
+
   display.setCursor(45,31);
-  display.println("7.2");
+  display.println(BPMS0002P);
   display.setCursor(87,31);
-  display.println("7.3");
+  display.println(BPMS0002P);
 
   display.setCursor(3,42);
   display.println("Veit");
@@ -223,11 +223,12 @@ void defaultView(){
   display.println("Dev");
   
   display.setCursor(3,54);
-  display.println("7.4");
+  display.println("0");
   display.setCursor(45,54);
-  display.println("7.5");
+  display.println("0");
   display.setCursor(87,54);
-  display.println("7.6");
+  display.println("0");
+  display.display();
 }
 
 
@@ -306,32 +307,25 @@ void loadingScreen(){
 void syncingScreen(){
   defaultView();
   display.setTextSize(1);
-  display.setCursor(36,45); 
+  display.setCursor(0,0); 
   display.print("Sending Data");
-  display.drawBitmap(4,36,sync_bmp, 24, 24, 1);
   display.display();
 }
 
 void sendingScreen(){
   defaultView();
   display.setTextSize(1);
-  display.setCursor(36,45); 
+  display.setCursor(0,0); 
   display.print("Sending Data");
-  display.drawBitmap(4,36,send_bmp, 24, 24, 1);
   display.display();
 }
 
 void sendingMailScreen(){
   defaultView();
   display.setTextSize(1);
-  display.setCursor(36,45); 
+  display.setCursor(0,0); 
   display.print("Sending Alert");
-  display.drawBitmap(4,36,alert_bmp, 24, 24, 1);
   display.display();
-  for(int i=36;i<118;i++){
-    display.drawPixel(i,58,SSD1306_WHITE);
-    display.display();
-  }
 }
 
 int centerText(String text,int size){
@@ -442,7 +436,7 @@ int alignRightPWD(){
 
 
 void reconnectingView(){
-  defaultView();
+  display.clearDisplay();
   display.setTextSize(1);
   display.setCursor(36,45); 
   display.print("Reconnecting");
@@ -457,7 +451,7 @@ void reconnectingView(){
 
 
 void waitingView(){
-  defaultView();
+  display.clearDisplay();
   display.setTextSize(1);
   display.setCursor(36,45); 
   display.print("Waiting (");
@@ -500,3 +494,4 @@ void  loadSync(){
   }
   startSync=prog;
 }
+

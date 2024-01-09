@@ -205,7 +205,14 @@ void defaultView(){
   }else if(systemStatus.equals("Offline")){
     display.drawBitmap(0,0,offline_bmp, 12, 12, 1);
   }else if(systemStatus.equals("Auto")){
+    if(autoOnline){
+      display.drawBitmap(0,0,auto_bmp, 12, 12, 1);
+      display.drawBitmap(14,0,online_bmp, 12, 12, 1);
+    }else{
     display.drawBitmap(0,0,auto_bmp, 12, 12, 1);
+    display.drawBitmap(14,0,offline_bmp, 12, 12, 1);
+
+    }
   }
   display.setTextSize(2);
   display.setCursor((128-xCursorPressure)/2,15);
@@ -301,7 +308,7 @@ void syncingScreen(){
   defaultView();
   display.setTextSize(1);
   display.setCursor(36,45); 
-  display.print("Sending Data");
+  display.print("Syncing Data");
   display.drawBitmap(4,36,sync_bmp, 24, 24, 1);
   display.display();
 }
@@ -468,29 +475,43 @@ void waitingView(){
 
 void  loadView(){
   if (firstRun){
-    int prog=10+(loading*107/100);
-    for(int i=startView;i<prog;i++){
+    int prog1=10+(loading*107/100);
+    for(int i=startView;i<prog1;i++){
       display.drawPixel(i,58,SSD1306_WHITE);
       display.display();
     }
-    startView=prog;
+    if(loading==100){
+      startView=0;
+      loading=0;
+    prog1=36;
+    }
+    startView=prog1;
   }
 }
 
 void  loadSend(){
-  int prog=36+(loadingSend*81/100);
-  for(int i=startSend;i<prog;i++){
+  int prog2=36+(loadingSend*81/100);
+  for(int i=startSend;i<prog2;i++){
     display.drawPixel(i,58,SSD1306_WHITE);
     display.display();
+  }if(loadingSend==100){
+    startSend=0;
+    loadingSend=0;
+    prog2=36;
   }
-  startSend=prog;
+  startSend=prog2;
 }
 
 void  loadSync(){
-  int prog=36+(loadingSync*81/100);
-  for(int i=startSync;i<prog;i++){
+  int prog3=36+(loadingSync*81/100);
+  for(int i=startSync;i<prog3;i++){
     display.drawPixel(i,58,SSD1306_WHITE);
     display.display();
   }
-  startSync=prog;
+  if(loadingSync==100){
+    startSync=0;
+    loadingSync=0;
+    prog3=36;
+  }
+  startSync=prog3;
 }

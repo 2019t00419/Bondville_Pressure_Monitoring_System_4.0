@@ -206,16 +206,16 @@ String readPassword() {
 
 String split(String strPayload){
   Serial.println("Payload Received");
-  //Serial.println("Test String: " + strPayload);
-  StringSplitter *splitter = new StringSplitter(strPayload, '&', 25);  // new StringSplitter(string_to_split, delimiter, limit)
+  Serial.println("Payload: " + strPayload);
+  StringSplitter *splitter = new StringSplitter(strPayload, '&', 50);  // new StringSplitter(string_to_split, delimiter, limit)
   int itemCount = splitter->getItemCount();
-  //Serial.println("Item count: " + String(itemCount));
+  Serial.println("Item count: " + String(itemCount));
 
   for(int i = 0; i < itemCount; i++){
     String item = splitter->getItemAtIndex(i);
     //Serial.println("Item @ index " + String(i) + ": " + String(item));
 
-    //Serial.println(item);
+    Serial.println(item);
     String strItem=String(item);
     if(strItem.equals("areaBPMS001")){
       BPMS0001AIndex=i+1;

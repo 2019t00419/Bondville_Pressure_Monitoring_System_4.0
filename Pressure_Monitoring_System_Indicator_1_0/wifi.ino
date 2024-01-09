@@ -1,12 +1,10 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
-#define Alarm_Pin 25
 
 #include <Wire.h>
 int tryMillis=0;
 
 
-int Alarm_State = LOW;
 
 
 char * ssid="LiquidSulphuric";
@@ -44,17 +42,41 @@ void setupWifi() {
     initialRun=true;
     loading=loading+20;  
     
-    server.on("/alarm/on", HTTP_GET, [](AsyncWebServerRequest *request) {
+    server.on("/BPMS001/on", HTTP_GET, [](AsyncWebServerRequest *request) {
     Serial.println("ESP32 Web Server: New request received:");
-    Serial.println("GET /alarm/on");
+    Serial.println(request->url());
+    Serial.println("GET /BPMS001/on");
+    
+    if (request->hasParam("pressure")) {
+      String BPMS001pressureValue = request->getParam("pressure")->value();
+      Serial.print("BPMS001 Pressure Value received: ");
+      Serial.println(BPMS001pressureValue);
+      syncWait=millis();
+      BPMS0001P = BPMS001pressureValue.toFloat();
+      BPMS0001S = "Yes";
+      // You can convert pressureValue to a numeric type if needed
+    }
+
     Alarm_State = HIGH;
     digitalWrite(Alarm_Pin, Alarm_State);
     request->send(200);
   });
-  server.on("/alarm/off", HTTP_GET, [](AsyncWebServerRequest *request) {
+
+
+
+  server.on("/BPMS001/off", HTTP_GET, [](AsyncWebServerRequest *request) {
     Serial.println("ESP32 Web Server: New request received:");
-    Serial.println("GET /alarm/off");
+    Serial.println("GET /BPMS001/off");
+    Serial.println(request->url());
     Alarm_State = LOW;
+     if (request->hasParam("pressure")) {
+      String BPMS001pressureValue = request->getParam("pressure")->value();
+      Serial.print("BPMS001 Pressure Value received: ");
+      Serial.println(BPMS001pressureValue);
+      BPMS0001P = BPMS001pressureValue.toFloat();
+      BPMS0001S = "No";
+      // You can convert pressureValue to a numeric type if needed
+    }
     digitalWrite(Alarm_Pin, Alarm_State);
     request->send(200);
   });

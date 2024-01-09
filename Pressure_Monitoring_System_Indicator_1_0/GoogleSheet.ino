@@ -62,10 +62,8 @@ void updateIP(){
     sentRequest=false;
     return;
   }else{
-    Serial.println(split(payload));
     loadingSync=loadingSync+20;
     loadSync();
-    Serial.println("New parameters received");
     loadingSync=loadingSync+20;
     loadSync();
     payload="";
@@ -103,44 +101,36 @@ void confirmUpdate(){
 
 void getPressureData(){
   Serial.println("Updating pressure data");
-  while(payload.equals("")){
-    if(!sentRequest){
-      sentRequest=true;  
-      HTTPClient http;
-      String url="https://script.google.com/macros/s/"+GOOGLE_SCRIPT_ID_FOR_DATA+"/exec?read";
-      //   Serial.print(url);
-      Serial.println("Making a request. Waiting for response");
-      http.begin(url.c_str()); //Specify the URL and certificate
-      http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
-      int httpCode = http.GET();
-      loadingSync=loadingSync+20;
-      loadSync();
-      if (httpCode > 0) { //Check for the returning code
-        payload = http.getString();
-        if(httpCode==200){
-          Serial.println("Received");
-        }else{
-          Serial.println("Error in receiving");
-          sentRequest=false;
-          return;
-        }
-        Serial.println(payload);
-        loading=loading+20;
-        loadView();
-        loadingSync=loadingSync+20;
-        loadSync();
-      }
-    else {
-      Serial.println("Error on HTTP request");
-      sentRequest=false;
+  HTTPClient http;
+  String url="https://script.google.com/macros/s/"+GOOGLE_SCRIPT_ID_FOR_DATA+"/exec?read";
+  //   Serial.print(url);
+  Serial.println("Making a request. Waiting for response");
+  http.begin(url.c_str()); //Specify the URL and certificate
+  http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
+  int httpCode = http.GET();
+  loadingSync=loadingSync+20;
+  loadSync();
+  if (httpCode > 0) { //Check for the returning code
+    payload = http.getString();
+    if(httpCode==200){
+      Serial.println("Received");
+    }else{
+      Serial.println("Error in receiving");
       return;
     }
-	  http.end();
-    }
+    Serial.println(payload);
+    loading=loading+20;
+    loadView();
+    loadingSync=loadingSync+20;
+    loadSync();
   }
+  else {
+    Serial.println("Error on HTTP request");
+    return;
+  }
+	  http.end();
   if(payload.equals("error")){
     Serial.println("Error received. Data not updated");
-    sentRequest=false;
     return;
   }else{
     Serial.println(split(payload));
@@ -149,8 +139,6 @@ void getPressureData(){
     Serial.println("New parameters received");
     loadingSync=loadingSync+20;
     loadSync();
-    payload="";
-    confirmUpdate();
     loadingSync=loadingSync+20;
     loadSync();
   }

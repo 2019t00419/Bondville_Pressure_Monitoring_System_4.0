@@ -2,12 +2,15 @@
 #include <WiFi.h>
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
+#define Alarm_Pin 25
 
 
-int syncDelay=300000;
+int Alarm_State = LOW;
+
+
+int syncDelay=60000;
 int syncWait=0;
-int uploadWait=0;
-int mailWait=0;
+
 int reconnectWait=0;
 int connectMillis=0;
 int loading=0;
@@ -18,6 +21,10 @@ bool reconnecting=false;
 
 bool firstRun=true;
 bool initialRun=true;
+bool updatePressure=false;
+int flashingDelay=1000;
+int flashingWait=0;
+bool flashState=false;
 
 
 
@@ -33,6 +40,7 @@ void setup(void) {
   setupWifi();
   setupTime();
   updateIP();
+  getPressureData();
 }
 
 
@@ -57,6 +65,19 @@ void loop(void) {
       }
     }else{
       showMode(); //display modes  
+    }
+  }else{
+    hold(); //identify button hold
+    showMode(); //display modes  
+    createAP();
+    if((millis()-syncWait)>syncDelay){
+      getPressureData();
+      syncWait=millis();
+    }
+    if((millis()-flashingWait)>flashingDelay){
+      flashState=!flashState;
+      showMode();
+      flashingWait=millis();
     }
   }
 }
