@@ -177,6 +177,9 @@ void defaultView(){
   }
 
 
+  display.setTextColor(SSD1306_WHITE, SSD1306_BLACK);
+  display.setCursor(3,0);
+  display.print(ip);
   if(BPMS0001S.equals("Yes")){
     if(flashState){
       for(int i=0;i<42;i++){
@@ -275,9 +278,6 @@ void updateView(){
   if(credUpdated){
     display.setCursor(6,55);
     display.print("Credentials Updated");
-  }else if(calibrated){
-    display.setCursor(33,55);
-    display.print("Calibrated");
   }else{
     display.setCursor(15,55);
     display.print("IP : ");

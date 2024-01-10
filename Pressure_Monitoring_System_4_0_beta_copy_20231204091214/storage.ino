@@ -23,8 +23,6 @@ String newCutoff;
 String newSystemStatus;
 String newSaveParam;
 String newAdminMail;
-String newIndicator1;
-String newIndicator2;
 
 float pressureA;
 float pressureB;
@@ -251,13 +249,13 @@ String split(String strPayload){
     }else if(i==saveParamIndex){
       newSaveParam=item;
     }else if(i==indicator1Index){
-      newIndicator1=item;
+      indicator1=item;
     }else if(i==indicator2Index){
-      newIndicator2=item;
+      indicator2=item;
     }
   }
   Serial.println("Payload Splitted");
-  return(newBPMSID+"\n"+newArea+"\n"+newUploadDelay+"\n"+newEmailDelay+"\n"+newCutoff+"\n"+newAdminMail+"\n"+newSystemStatus+"\n"+newSaveParam+"\n"+newIndicator1+"\n"+newIndicator2);
+  return(newBPMSID+"\n"+newArea+"\n"+newUploadDelay+"\n"+newEmailDelay+"\n"+newCutoff+"\n"+newAdminMail+"\n"+newSystemStatus+"\n"+newSaveParam+"\n"+indicator1+"\n"+indicator2);
 }
 
 
@@ -276,8 +274,8 @@ String SaveParamToNVS(){
     recipient4=readFlash("recipient4");
     systemStatus=readFlash("systemStatus");
     saveParam=readFlash("saveParam");
-    indicator1=readFlash("Indicator1");
-    indicator2=readFlash("Indicator2");
+    // indicator1=readFlash("Indicator1");
+    // indicator2=readFlash("Indicator2");
     Serial.println("Parameters updating");
     Serial.println("Old Values: "+BPMSID+" "+area+" "+uploadDelay+" "+emailDelay+" "+cutoff+" "+recipient0+","+recipient1+","+recipient2+","+recipient3+","+recipient4+","+systemStatus+" "+saveParam+" "+indicator1+" "+indicator2);
     //Serial.println("Old Setup Values: "+pressureA+" "+pressureB+" "+sensorA+" "+sensorB);
@@ -294,8 +292,8 @@ String SaveParamToNVS(){
     saveStringToFlash("recipient3",recipient3);
     saveStringToFlash("recipient4",recipient4);
     saveStringToFlash("systemStatus",newSystemStatus);
-    saveStringToFlash("Indicator1",newIndicator1);
-    saveStringToFlash("Indicator2",newIndicator2);
+    // saveStringToFlash("Indicator1",newIndicator1);
+    // saveStringToFlash("Indicator2",newIndicator2);
     newSaveParam="Parameters saved";
     Serial.println("Parameters saved to NVS");
     loadParameters();

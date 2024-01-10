@@ -1,5 +1,5 @@
 #include "sharedVar.h"
-String modes[]={"Home","Pressure Cutoff","Delays"};
+String modes[]={"Home","Pressure Cutoff","Delays","indicators"};
 int modeNo=0;
 
 bool btnHold=false;

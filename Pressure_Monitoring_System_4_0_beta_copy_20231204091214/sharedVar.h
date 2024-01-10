@@ -42,8 +42,6 @@ extern String adminMail;
 extern String indicator1;
 extern String indicator2;
 
-extern String newIndicator1;
-extern String newIndicator2;
 
 extern String recipient0;
 extern String recipient1;

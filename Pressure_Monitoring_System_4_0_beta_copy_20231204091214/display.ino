@@ -20,6 +20,10 @@ int xCursorSSID;
 int xCursorPWD;
 int xCursorSens;
 int xCursorWIFI;
+int xCursorIP1;
+int xCursorIP2;
+
+
 int startView=10;
 int startSend=36;
 int startSync=36;
@@ -178,6 +182,13 @@ void modeView(){
     display.setCursor((128-xCursorMail)/2,display.getCursorY()+4);
     display.print("Alert Delay: ");
     display.println(emailDelay);
+  }else if(modeNo==3){      
+    display.setCursor((128-xCursorIP1)/2,38);
+    display.print("Ind1 : ");
+    display.println(indicator1);
+    display.setCursor((128-xCursorIP2)/2,display.getCursorY()+4);
+    display.print("Ind2 : ");
+    display.println(indicator2);
   }
   display.display();
 }
@@ -193,6 +204,8 @@ void defaultView(){
   xCursorMail=centerMail(emailDelay,1);
   xCursorCutoff=centerCutoff(cutoff,1);
   xCursorWIFI=centerWIFI(1);
+  xCursorIP1=centerIP1(indicator1,1);
+  xCursorIP2=centerIP2(indicator2,1);
 
   //centering text
   if(WiFi.status() == WL_CONNECTED){
@@ -374,6 +387,26 @@ int centerUpload(int number,int size){
     display.setCursor(0,0);
     display.print("Upload Delay: ");
     display.print(number);
+    int xCursor=display.getCursorX();
+    display.clearDisplay();
+    return(xCursor);
+}
+int centerIP1(String IPAddr,int size){
+    display.clearDisplay();
+    display.setTextSize(size);
+    display.setCursor(0,0);
+    display.print("Ind1 : ");
+    display.print(IPAddr);
+    int xCursor=display.getCursorX();
+    display.clearDisplay();
+    return(xCursor);
+}
+int centerIP2(String IPAddr,int size){
+    display.clearDisplay();
+    display.setTextSize(size);
+    display.setCursor(0,0);
+    display.print("Ind2 : ");
+    display.print(IPAddr);
     int xCursor=display.getCursorX();
     display.clearDisplay();
     return(xCursor);
