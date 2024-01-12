@@ -17,6 +17,7 @@ String payload;
 WiFiClientSecure client;
 
 void updateIP(){
+  pingTest();
   Serial.println("Updating DHCP IP address");
   while(payload.equals("")){
     ip = ipToString(WiFi.localIP());
@@ -100,6 +101,7 @@ void confirmUpdate(){
 }
 
 void getPressureData(){
+  pingTest();
   Serial.println("Updating pressure data");
   HTTPClient http;
   String url="https://script.google.com/macros/s/"+GOOGLE_SCRIPT_ID_FOR_DATA+"/exec?read";

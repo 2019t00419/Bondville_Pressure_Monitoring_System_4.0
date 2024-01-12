@@ -1,5 +1,6 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
+#include <ESP32Ping.h>
 
 #include <Wire.h>
 int tryMillis=0;
@@ -7,8 +8,8 @@ int tryMillis=0;
 
 
 
-char * ssid="LiquidSulphuric";
-char * password="H2SO4(l)";
+char * ssid;
+char * password;
 
 
 void setupWifi() {
@@ -40,7 +41,8 @@ void setupWifi() {
   // Route to control the LED
     Serial.println("Connected");
     initialRun=true;
-    loading=loading+20;  
+    loading=loading+20;   
+    pingTest();
     
     server.on("/BPMS001/on", HTTP_GET, [](AsyncWebServerRequest *request) {
     Serial.println("ESP32 Web Server: New request received:");
@@ -88,4 +90,17 @@ void setupWifi() {
   }
 }
 
+
+void pingTest() {
+  bool success = Ping.ping("8.8.8.8", 1);
+ 
+  if(!success){
+    Serial.println("Ping failed");
+    internet=false;
+    return;
+  }
+ 
+  internet=true;
+  Serial.println("Ping succesful.");
+}
 

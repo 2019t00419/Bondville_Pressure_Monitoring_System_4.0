@@ -16,6 +16,7 @@ String payload;
 WiFiClientSecure client;
 
 void updatePara(){
+  pingTest();
   Serial.println("Updating parameters");
   while(payload.equals("")){
     if(!sentRequest){
@@ -106,6 +107,7 @@ void setupTime()
 
 void sendData(){
   if (WiFi.status() == WL_CONNECTED) {
+      pingTest();
       static bool flag = false;
       struct tm timeinfo;
       if (!getLocalTime(&timeinfo)) {
@@ -150,6 +152,7 @@ void sendData(){
 }
 
 void sendToIndicator(){  
+  pingTest();
   Serial.println("Sending data to indicator");
     HTTPClient http;
     String urls;

@@ -1,5 +1,6 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
+#include <ESP32Ping.h>
 
 #include <Wire.h>
 int tryMillis=0;
@@ -36,7 +37,22 @@ void setupWifi() {
     initialRun=true;
     loading=loading+20;
     loadView();
+    pingTest();
   }else{
     Serial.println("\nNot Connected");
   }
+}
+
+
+void pingTest() {
+  bool success = Ping.ping("8.8.8.8", 1);
+ 
+  if(!success){
+    Serial.println("Ping failed");
+    internet=false;
+    return;
+  }
+ 
+  internet=true;
+  Serial.println("Ping succesful.");
 }

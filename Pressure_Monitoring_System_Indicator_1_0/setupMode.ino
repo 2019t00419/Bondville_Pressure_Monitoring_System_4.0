@@ -268,6 +268,8 @@ void createAP(){
       Serial.println(APpassword);
       Serial.print("AP IP Address: ");
       Serial.println(WiFi.softAPIP());
+      Serial.print("MAC Address: ");
+      Serial.println(WiFi.macAddress());
 
       // Send web page with input fields to client
       server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){

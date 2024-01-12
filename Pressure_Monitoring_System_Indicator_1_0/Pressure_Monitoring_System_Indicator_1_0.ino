@@ -27,6 +27,9 @@ int flashingWait=0;
 bool flashState=false;
 
 
+bool internet=false;
+
+
 
 void setup(void) {
   Serial.begin(115200);
@@ -70,6 +73,14 @@ void loop(void) {
     hold(); //identify button hold
     showMode(); //display modes  
     createAP();
+    if(!internet){
+        Serial.println("No internet");
+        Serial.println("System restarting");
+        restartView();
+        ESP.restart();
+    }else{
+        //Serial.println("Connected to internet");
+    }
     if((millis()-syncWait)>syncDelay){
       getPressureData();
       syncWait=millis();

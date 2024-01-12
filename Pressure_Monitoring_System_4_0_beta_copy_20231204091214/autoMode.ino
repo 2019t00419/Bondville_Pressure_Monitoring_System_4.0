@@ -24,7 +24,7 @@ String autoMode(){
       Serial.println(timeStr);
       if(day.equals("Sunday")){
         autoOnline=false;
-        return("System offine, SstartSyncunday");
+        return("System offine, Sunday");
       }else if((timeInt<600 || timeInt>2159)){
         autoOnline=false;
         return("System offine, shift over");

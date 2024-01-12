@@ -548,3 +548,16 @@ void  loadSync(){
   }
   startSync=prog3;
 }
+
+
+void restartView(){
+  defaultView();
+  display.setTextSize(1);
+  display.setCursor(36,45); 
+  display.println("No Internet");
+  display.setCursor(36,display.getCursorY()); 
+  display.println("Rebooting");
+  display.drawBitmap(4,36,alert_bmp, 24, 24, 1);
+  display.display();
+  delay(3000);
+}

@@ -21,6 +21,7 @@ bool initialRun=true;
 bool sendfirstData=true;
 
 bool turnOffAlert=false;
+bool internet=false;
 bool alert=false;
 
 
@@ -68,6 +69,14 @@ void loop(void) {
     hold(); //identify button hold
     showMode(); //display modes  
     createAP();
+    if(!internet){
+        Serial.println("No internet");
+        Serial.println("System restarting");
+        restartView();
+        ESP.restart();
+    }else{
+        //Serial.println("Connected to internet");
+    }
     if((millis()-syncWait)>syncDelay){
       sentRequest=false;
       syncingScreen();
