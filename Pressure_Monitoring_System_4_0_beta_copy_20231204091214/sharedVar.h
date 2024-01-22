@@ -41,6 +41,8 @@ extern String saveParam;
 extern String adminMail;
 extern String indicator1;
 extern String indicator2;
+extern String restartRecord;
+extern String newRecord;
 
 
 extern String recipient0;
@@ -56,6 +58,11 @@ extern int loadingSync;
 
 extern bool calibrated;
 extern bool credUpdated;
+
+
+extern int timeInt;
+extern String timeStrPublic;
+extern String dayPublic;
 #endif
 
 

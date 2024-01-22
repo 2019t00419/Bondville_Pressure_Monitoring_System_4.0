@@ -22,6 +22,7 @@ int xCursorSens;
 int xCursorWIFI;
 int xCursorIP1;
 int xCursorIP2;
+int xCursorIP;
 
 
 int startView=10;
@@ -172,9 +173,6 @@ void modeView(){
     display.print("Cutoff: ");
     display.print(cutoff);
     display.println(" Bar");
-    display.setCursor((128-xCursorWIFI)/2,display.getCursorY()+4);
-    display.print("WiFi: ");
-    display.println(ssid);
   }else if(modeNo==2){    
     display.setCursor((128-xCursorData)/2,38);
     display.print("Upload Delay: ");
@@ -183,6 +181,13 @@ void modeView(){
     display.print("Alert Delay: ");
     display.println(emailDelay);
   }else if(modeNo==3){      
+    display.setCursor((128-xCursorWIFI)/2,display.getCursorY()+4);
+    display.print("WiFi: ");
+    display.println(ssid);
+    display.setCursor((128-xCursorIP)/2,display.getCursorY()+4);
+    display.print("IP : ");
+    display.println(WiFi.localIP());
+  }else if(modeNo==4){      
     display.setCursor((128-xCursorIP1)/2,38);
     display.print("Ind1 : ");
     display.println(indicator1);
@@ -206,6 +211,7 @@ void defaultView(){
   xCursorWIFI=centerWIFI(1);
   xCursorIP1=centerIP1(indicator1,1);
   xCursorIP2=centerIP2(indicator2,1);
+  xCursorIP=centerIP(1);
 
   //centering text
   if(WiFi.status() == WL_CONNECTED){
@@ -407,6 +413,16 @@ int centerIP2(String IPAddr,int size){
     display.setCursor(0,0);
     display.print("Ind2 : ");
     display.print(IPAddr);
+    int xCursor=display.getCursorX();
+    display.clearDisplay();
+    return(xCursor);
+}
+int centerIP(int size){
+    display.clearDisplay();
+    display.setTextSize(size);
+    display.setCursor(0,0);
+    display.print("IP : ");
+    display.print(WiFi.localIP());
     int xCursor=display.getCursorX();
     display.clearDisplay();
     return(xCursor);

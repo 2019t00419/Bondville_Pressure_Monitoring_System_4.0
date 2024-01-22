@@ -37,6 +37,8 @@ void updatePara(){
         }else{
           Serial.println("Error in receiving");
           sentRequest=false;
+          restartingReason("Error in receiving");
+          ESP.restart();
           return;
         }
         Serial.println(payload);
@@ -48,6 +50,8 @@ void updatePara(){
     else {
       Serial.println("Error on HTTP request");
       sentRequest=false;
+      restartingReason("Error on HTTP request");
+      ESP.restart();
       return;
     }
 	  http.end();
@@ -56,6 +60,8 @@ void updatePara(){
   if(payload.equals("error")){
     Serial.println("Error received. Data not updated");
     sentRequest=false;
+    restartingReason("Error received. Data not updated");
+    ESP.restart();
     return;
   }else{
     Serial.println(split(payload));
@@ -112,6 +118,8 @@ void sendData(){
       struct tm timeinfo;
       if (!getLocalTime(&timeinfo)) {
         Serial.println("Failed to obtain time");
+        restartingReason("Failed to obtain time");
+        ESP.restart();
         return;
       }
       loadingSend=loadingSend+20;

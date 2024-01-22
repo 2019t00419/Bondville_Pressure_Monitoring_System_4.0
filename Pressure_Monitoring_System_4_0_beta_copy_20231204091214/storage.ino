@@ -23,6 +23,8 @@ String newCutoff;
 String newSystemStatus;
 String newSaveParam;
 String newAdminMail;
+String restartRecord;
+String newRecord;
 
 float pressureA;
 float pressureB;
@@ -126,6 +128,44 @@ String readFlash(const char* key) {
         return("Error");
     }
 }
+
+
+String readRestartRecord(const char* key) {
+    // Read the string back from flash (optional, just for verification)
+    nvs_handle_t nvs_handle;
+    esp_err_t err;
+
+    err = nvs_open("storage", NVS_READONLY, &nvs_handle);
+    if (err == ESP_OK) {
+        char read_value[2048]; // Assuming your string is less than 32 characters
+        size_t length = sizeof(read_value);
+        
+        err = nvs_get_str(nvs_handle, key, read_value, &length);
+        if (err == ESP_OK) {
+            Serial.printf(key);
+            Serial.printf(" is: %s\n", read_value);
+
+            // Convert read_value to a char*
+            result = new char[length];
+            strcpy(result, read_value);
+
+            // Print and verify the updated SSID
+            //Serial.printf("Updated SSID is: %s\n", ssid);
+            return(result);
+        } else {
+            Serial.printf("Error reading from NVS (%s)\n", esp_err_to_name(err));
+            saveStringToFlash(key,""); //reset key
+            return("Error");
+        }
+
+        nvs_close(nvs_handle);
+    } else {
+        Serial.printf("Error opening NVS handle for reading(%s)\n", esp_err_to_name(err));
+        return("Error");
+    }
+}
+
+
 
 String readSSID() {
     // Read the string back from flash (optional, just for verification)
@@ -274,8 +314,6 @@ String SaveParamToNVS(){
     recipient4=readFlash("recipient4");
     systemStatus=readFlash("systemStatus");
     saveParam=readFlash("saveParam");
-    // indicator1=readFlash("Indicator1");
-    // indicator2=readFlash("Indicator2");
     Serial.println("Parameters updating");
     Serial.println("Old Values: "+BPMSID+" "+area+" "+uploadDelay+" "+emailDelay+" "+cutoff+" "+recipient0+","+recipient1+","+recipient2+","+recipient3+","+recipient4+","+systemStatus+" "+saveParam+" "+indicator1+" "+indicator2);
     //Serial.println("Old Setup Values: "+pressureA+" "+pressureB+" "+sensorA+" "+sensorB);
@@ -316,8 +354,6 @@ void loadParameters(){
     recipient4=readFlash("recipient4");
     systemStatus=readFlash("systemStatus");
     saveParam=readFlash("saveParam");
-    indicator1=readFlash("Indicator1");
-    indicator2=readFlash("Indicator2");
     readSSID();
     readPassword();
     pressureA=readFlash("pressureA").toFloat();
@@ -388,4 +424,47 @@ void saveCalibration(){
 void loadCredentials(){
   readSSID();
   readPassword();
+}
+
+void restarted(){
+  newRecord=getTime();
+  Serial.println("restart Record : ");
+  Serial.print("Time:");
+  Serial.println(newRecord);
+  restartRecord=readRestartRecord("restarted");
+  restartRecord=restartRecord+"\n"+newRecord;
+  saveStringToFlash("restarted",restartRecord);
+  Serial.println(restartRecord);
+}
+
+void restarting(){
+  newRecord="Restarting due to lack of Internet";
+  Serial.print("restart Record : ");
+  Serial.println(newRecord);
+  restartRecord=readRestartRecord("restarted");
+  restartRecord=restartRecord+"\n"+newRecord;
+  saveStringToFlash("restarted",restartRecord);
+  Serial.println(restartRecord);
+}
+void restartingReason(String reason){
+  newRecord="Restarting due to "+reason;
+  Serial.print("restart Record : ");
+  Serial.println(newRecord);
+  restartRecord=readRestartRecord("restarted");
+  restartRecord=restartRecord+"\n"+newRecord;
+  saveStringToFlash("restarted",restartRecord);
+  Serial.println(restartRecord);
+}
+
+String getTime(){
+  static bool flag = false;
+  struct tm timeinfoGet;
+  if (!getLocalTime(&timeinfoGet)) {
+    Serial.println("Failed to obtain time");
+    return("Failed to obtain time");
+  }
+  char timeStringBuff1[50]; //50 chars should be enough
+  strftime(timeStringBuff1, sizeof(timeStringBuff1), "%H:%M %B %d %Y", &timeinfoGet);
+  String newTime(timeStringBuff1);
+  return(newTime);
 }

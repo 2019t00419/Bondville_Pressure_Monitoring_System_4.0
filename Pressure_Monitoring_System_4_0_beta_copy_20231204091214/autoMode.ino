@@ -1,6 +1,8 @@
 #include "time.h"
 int timeInt;
 bool autoOnline=false;
+String timeStrPublic;
+String dayPublic;
 
 String autoMode(){
   static bool flag = false;
@@ -15,6 +17,7 @@ String autoMode(){
       day.replace(" ", "%20");
       Serial.print("Day:");
       Serial.println(day);
+      dayPublic=day;
       char timeStringBuff[50]; //50 chars should be enough
       strftime(timeStringBuff, sizeof(timeStringBuff), "%H%M", &timeinfo);
       String timeStr(timeStringBuff);
@@ -22,6 +25,7 @@ String autoMode(){
       timeInt=timeStr.toInt();
       Serial.print("time:");
       Serial.println(timeStr);
+      timeStrPublic=timeStr;
       if(day.equals("Sunday")){
         autoOnline=false;
         return("System offine, Sunday");

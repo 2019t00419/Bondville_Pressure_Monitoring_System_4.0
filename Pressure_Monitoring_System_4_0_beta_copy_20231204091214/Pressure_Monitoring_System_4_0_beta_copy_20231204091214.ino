@@ -23,6 +23,11 @@ bool sendfirstData=true;
 bool turnOffAlert=false;
 bool internet=false;
 bool alert=false;
+bool logCreated=false;
+String Log="";
+String logUpload="";
+String logPressure="";
+String startTime="";
 
 
 
@@ -40,12 +45,15 @@ void setup(void) {
   setupTime();
   loadParameters();
   updatePara();
+  autoMode();
+  restarted();
 }
 
 
 
 
 void loop(void) {
+  updateLog();
   if(WiFi.status() != WL_CONNECTED){
     //Serial.println("Not Connceted");
     hold(); //identify button hold
@@ -72,12 +80,14 @@ void loop(void) {
     if(!internet){
         Serial.println("No internet");
         Serial.println("System restarting");
+        restarting();
         restartView();
         ESP.restart();
     }else{
         //Serial.println("Connected to internet");
     }
     if((millis()-syncWait)>syncDelay){
+      autoMode();
       sentRequest=false;
       syncingScreen();
       updatePara(); 
@@ -87,9 +97,11 @@ void loop(void) {
       sendingScreen();
       sendData();
       uploadWait=millis();
+      logUpload=logUpload+"Time : "+ getTime() +"\tPressure : "+String(pressure)+ "\tSystem Status : "+systemStatus+ "\tAuto online : "+autoOnline+"\t\tWaited time for data : "+String(millis()-uploadWait)+"\tUploiad Delay : "+uploadDelay+ "\n";
     }if(sendfirstData && !(pressure<cutoff)){
       alert=false;
       sendfirstData=false;
+      logCreated=false;
       digitalWrite(alarmLamp,LOW);
       syncingScreen();
       sendToIndicator();
@@ -97,6 +109,10 @@ void loop(void) {
       sendData();
     }
     if(pressure<cutoff){
+      if(!logCreated){
+        logPressure=logPressure+"Time : "+ getTime() +"\tPressure : "+String(pressure)+ "\tSystem Status : "+systemStatus+ "\tAuto online : "+autoOnline+"\t\tWaited time for mail : "+String(millis()-mailWait)+"\tMail Delay : "+emailDelay+"\tWaited time for data : "+String(millis()-uploadWait)+"\tUploiad Delay : "+uploadDelay+ "\n";
+        logCreated=true;
+      }
       if((systemStatus=="Online") || (autoOnline && systemStatus=="Auto")){
         sendfirstData=true;
         if((millis()-mailWait)>emailDelay || firstRun){
